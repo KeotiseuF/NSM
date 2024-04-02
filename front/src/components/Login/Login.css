@@ -1,0 +1,8 @@
+.login-button {
+  background: var(--bg-button);
+  border: none;
+  padding: 7px 10px;
+  width: 85px;
+  border-radius: var(--border-radius-button);
+  cursor: pointer;
+}

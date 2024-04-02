@@ -1,0 +1,40 @@
+.button-lang {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  background: var(--bg-button);
+  border: none;
+  padding: 7px 10px;
+  width: 85px;
+}
+
+.container-lang {
+  position: absolute;
+  padding: 0;
+  margin: 0;
+}
+
+.container-lang li {
+  margin: 0;
+  list-style: none;
+  background: var(--bg-button);
+  border: none;
+  width: 85px;
+}
+
+.lang-labels {
+  cursor: pointer;
+  display: block;
+  display: flex;
+  align-items: center;
+  padding: 7px 10px;
+  width: 100%;
+}
+
+.switcher-lang {
+  display: none;
+}
+
+.flags {
+  margin-right: 7px;
+}
