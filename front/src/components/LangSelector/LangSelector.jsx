@@ -1,9 +1,11 @@
-import './LangSelector.css';
 import { useState } from 'react';
-import i18n from '../../hooks/i18n'; 
+import i18n from '../../hooks/i18n';
+
 import flagFr from '../../assets/images/france.png';
 import flagEn from '../../assets/images/united-states.png';
 import downArrow from '../../assets/images/down-arrow.png';
+
+import './LangSelector.css';
 
 function LangSelector() {
   const [langSelect, setLangSelect] = useState('en');

@@ -10,6 +10,16 @@ body {
   margin: 0;
 }
 
+p, a {
+  color: var(--color-text);
+}
+
+a:hover {
+  text-decoration: underline;
+  color: var(--color-text-link);
+  text-decoration-color: var(--color-underline-link);
+}
+
 .icon {
   width: var(--size-icon);
 }

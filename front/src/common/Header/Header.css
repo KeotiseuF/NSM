@@ -37,6 +37,7 @@ header {
 .main-links {
   text-underline-position: under;
   font-size: large;
+  text-decoration: none;
 }
 
 .sub-header-bis {
