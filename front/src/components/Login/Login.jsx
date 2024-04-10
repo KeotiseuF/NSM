@@ -2,7 +2,7 @@ import './Login.css';
 
 function Login() {
   return (
-    <button className='login-button'>LOGIN</button>
+    <button className='btn'>LOGIN</button>
   )
 }
 

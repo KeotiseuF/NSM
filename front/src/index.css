@@ -10,16 +10,34 @@ body {
   margin: 0;
 }
 
+main {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin: 45px;
+}
+
 p, a {
   color: var(--color-text);
 }
 
-a:hover {
-  text-decoration: underline;
-  color: var(--color-text-link);
-  text-decoration-color: var(--color-underline-link);
-}
-
 .icon {
   width: var(--size-icon);
+}
+
+.btn {
+  background: var(--bg-button);
+  border: none;
+  padding: 7px 10px;
+  width: 85px;
+  border-radius: var(--border-radius-button);
+  cursor: pointer;
+}
+
+/* Tablet view  */
+
+@media (max-width: 950px) {
+  main {
+    margin-top: 100px;
+  }
 }

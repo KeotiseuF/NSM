@@ -11,8 +11,8 @@ function LangSelector() {
   const [langSelect, setLangSelect] = useState('en');
   const [displayLang, setDisplayLang] = useState(false);
   const lang = {
-    'fr':  <><img className='flags icon' src={flagFr} alt="french flang" />FR</>,
-    'en': <><img className='flags icon' src={flagEn} alt="usa flang" />EN</>
+    fr:  <><img className='flags icon' src={flagFr} alt="french flang" />FR</>,
+    en: <><img className='flags icon' src={flagEn} alt="usa flang" />EN</>
   }
 
   const changeLanguage = (lng) => {
@@ -23,7 +23,7 @@ function LangSelector() {
   
   return(
     <div>
-      <button className='button-lang' style={displayLang ? {borderRadius: '10px 10px 0 0'} : {borderRadius: '10px'}} onClick={() => setDisplayLang(!displayLang)}>
+      <button className='btn btn-lang' style={displayLang ? {borderRadius: '10px 10px 0 0'} : {borderRadius: '10px'}} onClick={() => setDisplayLang(!displayLang)}>
         {langSelect == 'en' ? lang.en : lang.fr}
         <img className='icon' src={downArrow} />
       </button>

@@ -1,11 +1,6 @@
-.button-lang {
+.btn-lang {
   display: flex;
   align-items: center;
-  cursor: pointer;
-  background: var(--bg-button);
-  border: none;
-  padding: 7px 10px;
-  width: 85px;
 }
 
 .container-lang {

@@ -17,8 +17,8 @@ function Header() {
         <div className="container-nav">
           <nav>
             <ul className='container-main-links'>
-              <li><NavLink className="main-links" to="/home">{t('HOME.HOME')}</NavLink></li>
-              <li><NavLink className="main-links" to="/operation">{t('HOME.OPERATION')}</NavLink></li>
+              <li><NavLink className="main-links" to="/home">{t('HEADER.HOME')}</NavLink></li>
+              <li><NavLink className="main-links" to="/operation">{t('HEADER.OPERATION')}</NavLink></li>
             </ul>
           </nav>
         </div>
@@ -28,7 +28,7 @@ function Header() {
         <div className='container-nav'>
           <nav>
             <ul className='container-main-links'>
-              <li><NavLink className="main-links" to="/learn">{t('HOME.LEARN')}</NavLink></li>
+              <li><NavLink className="main-links" to="/learn">{t('HEADER.LEARN')}</NavLink></li>
               <li><NavLink className="main-links" to="/qcm">QCM</NavLink></li>
             </ul>
           </nav>
