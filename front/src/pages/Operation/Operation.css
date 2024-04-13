@@ -19,5 +19,38 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: 80%;
+}
+
+.container-how-many {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.container-input-how-many {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-how-many {
+  width: 50px;
+  background: none;
+  text-align: center;
+  border: none;
+  border-bottom: solid 2px;
+  font-size: xx-large;
+}
+
+.input-how-many:focus-visible {
+  outline: none;
+}
+
+.container-how-many button {
+  margin-top: 50px;
+  font-size: x-large;
+  height: 45px;
+  width: 95px;
 }

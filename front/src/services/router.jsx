@@ -1,6 +1,7 @@
 import {  createBrowserRouter } from "react-router-dom";
-import Error from '../pages/Error/Error'
+
 import App from '../App';
+import Error from '../pages/Error/Error';
 import Home from "../pages/Home/Home";
 import Operation from "../pages/Operation/Operation";
 
@@ -18,7 +19,7 @@ const router = createBrowserRouter([
         element: <Operation />,
       },
     ],
-    errorElement: <Error />
+    errorElement: <Error />,
   },
 ]);
 
