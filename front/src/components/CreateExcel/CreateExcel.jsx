@@ -1,13 +1,20 @@
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PropTypes from 'prop-types';
 
 import separartor from "../../assets/images/separator.svg";
 
 import './CreateExcel.css';
+import { getListCrypto } from "../../services/request";
+
 
 function CreateExcel({nbStock, nbCrypto}) {
   const { t } = useTranslation();
-  const checkStockAndCrypto = nbStock > 0 && nbCrypto > 0;
+  const [listCrypto, setListCrypto] = useState(null);
+
+  const checkStock = nbStock > 0;
+  const checkCrypto = nbCrypto > 0;
+  const checkStockAndCrypto = checkStock && checkCrypto;
 
   const classContainerForms = checkStockAndCrypto ? "container-two-forms" : "container-one-form";
 
@@ -22,10 +29,13 @@ function CreateExcel({nbStock, nbCrypto}) {
     }
 
     for(let i = 0; number > i; i++) { lines.push(`${value}-${i}`) }
-
-    if (value === 'stock') console.log(lines)
+    
     return lines;
   }
+
+  useEffect(() => {
+    checkCrypto && getListCrypto().then((list) => { setListCrypto(list)});
+  }, [checkCrypto])
 
   return (
   <div className="top-container">
@@ -46,9 +56,6 @@ function CreateExcel({nbStock, nbCrypto}) {
                     <li key={line}>
                       <select name="stock">
                         <option value="">--Please choose an option--</option>
-                        <option value="apple">Apple</option>
-                        <option value="coca-cola">Coca-cola</option>
-                        <option value="air-liquide">Air Liquide</option>
                       </select>
                       <input className="input-form" type="text" name="value-crypto" />
                       <input type="date" />
@@ -58,7 +65,7 @@ function CreateExcel({nbStock, nbCrypto}) {
                 }) 
               }
             </ol>
-            <input type="button" />
+            <button>+</button>
           </form>
         </div>
       }
@@ -78,13 +85,17 @@ function CreateExcel({nbStock, nbCrypto}) {
                   return (                
                     <li key={line}>
                         <select name="crypto">
-                            <option value="">--Please choose an option--</option>
-                            <option value="btc">BTC</option>
-                            <option value="eth">ETH</option>
-                            <option value="borg">BORG</option>
-                            <option value="sol">SOL</option>
-                            <option value="usdc">USDC</option>
-                          </select>
+                          <option value="">--Please choose an option--</option>
+                          {
+                            listCrypto && listCrypto?.map((crypto) => {
+                              return (
+                                <>
+                                  <option value={crypto.symbol}>{crypto.symbol}</option>
+                                </>
+                              )
+                            })
+                          }
+                        </select>
                         <input className="input-form" type="text" />
                         <input type="date" />
                         <button>X</button>
@@ -93,7 +104,7 @@ function CreateExcel({nbStock, nbCrypto}) {
                 })
               }
             </ol>
-            <input type="button" />
+            <button>+</button>
           </form>
         </div>
       }
