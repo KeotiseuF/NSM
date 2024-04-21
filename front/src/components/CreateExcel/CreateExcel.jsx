@@ -5,12 +5,15 @@ import PropTypes from 'prop-types';
 import separartor from "../../assets/images/separator.svg";
 
 import './CreateExcel.css';
-import { getListCrypto } from "../../services/request";
+import { getListCrypto, getListStock } from "../../services/request";
 
 
 function CreateExcel({nbStock, nbCrypto}) {
   const { t } = useTranslation();
+  const [initStockList, setInitStockList] = useState(null);
+  const [listStock, setListStock] = useState(null);
   const [listCrypto, setListCrypto] = useState(null);
+  const [nameLine, setNameLine] = useState(null);
 
   const checkStock = nbStock > 0;
   const checkCrypto = nbCrypto > 0;
@@ -32,15 +35,41 @@ function CreateExcel({nbStock, nbCrypto}) {
     
     return lines;
   }
+  
+  const filterList = (name, value) => {
+    const chekStockName = name.includes('stock') && value.length >= 3; 
+    const chekCryptoName = name.includes('crypto') && value.length >= 2;
+    let newList = undefined;
+    let listWithDuplicata = undefined;
+
+    if(chekStockName){
+      listWithDuplicata = initStockList.filter((stock) => stock.name.toLowerCase().includes(value.toLowerCase()) || stock.symbol.toLowerCase().includes(value.toLowerCase()));
+      newList = [...new Map(listWithDuplicata.map((stock) => [stock.symbol, stock])).values()];
+
+      setListStock(newList);
+      setNameLine(name);
+    }
+    if(chekCryptoName){
+      newList = listCrypto?.filter((crypto) => crypto.name.includes(value))
+    }
+  }
+
+  const cryptoChange = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+
+    filterList(name, value);
+  }
 
   useEffect(() => {
+    checkStock && getListStock().then((list) => { setInitStockList(list?.data)});
     checkCrypto && getListCrypto().then((list) => { setListCrypto(list)});
-  }, [checkCrypto])
+  }, [checkCrypto, checkStock])
 
   return (
   <div className="top-container">
     <div className={classContainerForms}>
-      {nbStock > 0 &&
+      {nbStock > 0 && initStockList ?
         <div className="container-form">
           <h2>{t('OPERATION.STOCK')}</h2>
           <form className="operation-form" action="">
@@ -52,12 +81,23 @@ function CreateExcel({nbStock, nbCrypto}) {
             <ol>
               { 
                 createForm('stock').map((line) => {
-                return (                
-                    <li key={line}>
-                      <select name="stock">
-                        <option value="">--Please choose an option--</option>
+                return (
+                  <li key={line}>
+                    <div>
+                      <input className="input-form" type="text" name={line} onChange={cryptoChange}/>
+                      <select name="pets" id="pet-select">
+                      {
+                        nameLine === line && listStock.map((stock) => {
+                          return (
+                            <>
+                              <option value={stock.symbol}>{stock.name} / {stock.symbol}</option>
+                            </>
+                          )
+                        })
+                      }
                       </select>
-                      <input className="input-form" type="text" name="value-crypto" />
+                    </div>
+                      <input className="input-form" type="text" name="value-stock" />
                       <input type="date" />
                       <button>X</button>
                     </li>
@@ -67,7 +107,8 @@ function CreateExcel({nbStock, nbCrypto}) {
             </ol>
             <button>+</button>
           </form>
-        </div>
+        </div> :
+        <h2>Loading...</h2>
       }
       { checkStockAndCrypto && <img src={separartor} /> }
       { nbCrypto > 0 && 
@@ -90,13 +131,13 @@ function CreateExcel({nbStock, nbCrypto}) {
                             listCrypto && listCrypto?.map((crypto) => {
                               return (
                                 <>
-                                  <option value={crypto.symbol}>{crypto.symbol}</option>
+                                  <option value={crypto.symbol}>{crypto.name} / {crypto.symbol}</option>
                                 </>
                               )
                             })
                           }
                         </select>
-                        <input className="input-form" type="text" />
+                        <input className="input-form" type="text" name="value-crypto"/>
                         <input type="date" />
                         <button>X</button>
                     </li>

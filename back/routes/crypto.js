@@ -1,8 +1,8 @@
 const express = require('express');
-const router = express.Router();
+const cryptoRouter = express.Router();
 
 const crypto = require('../controllers/crypto');
 
-router.get('/', crypto.getCryptos);
+cryptoRouter.get('/', crypto.getCryptos);
 
-module.exports = router;
+module.exports = cryptoRouter;

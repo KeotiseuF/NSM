@@ -4,11 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "dotenvx run -f .env.local -- nodemon app",
+    "prod": "dotenvx run -f .env.production -- nodemon app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@dotenvx/dotenvx": "^0.35.1",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "node-cache": "^5.1.2"
