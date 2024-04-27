@@ -4,7 +4,7 @@ require('@dotenvx/dotenvx').config();
 
 const app = express();
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 const stock = require('./routes/stock');
 const crypto = require('./routes/crypto');

@@ -11,9 +11,16 @@ const FR = {
     HOW_MANY_CRYPTO: "Combien de crypto as-tu ?",
     HOW_MANY_STOCK: "Combien d'action as-tu ?",
     IMPORT: "Importer",
+    INVEST: "Invest (€)",
+    LOADING: "Chargement...",
+    NAME: "Nom",
     NEXT: "Suivant",
     NO_DATA: "PAS DE DONNÉE",
     OR: "ou",
+    PLACEHOLDER: {
+      STOCK: "Entrer nom de l'action", 
+      CRYPTO: "Entrer nom de la crypto" 
+    },
     STOCK: "ACTION"
   }
 }

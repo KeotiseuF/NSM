@@ -2,25 +2,32 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PropTypes from 'prop-types';
 
-import separartor from "../../assets/images/separator.svg";
+import { getListCrypto, getListStock } from "../../services/request";
+import DataList from "../../common/DataList/DataList";
+
+import horizontalSeparartor from "../../assets/images/horizontal-separator.svg";
+import huskyThinks from "../../assets/images/husky-thinks.png";
 
 import './CreateExcel.css';
-import { getListCrypto, getListStock } from "../../services/request";
 
+CreateExcel.propTypes  = {
+  nbStock: PropTypes.number,
+  nbCrypto: PropTypes.number,
+}
 
 function CreateExcel({nbStock, nbCrypto}) {
   const { t } = useTranslation();
   const [initStockList, setInitStockList] = useState(null);
-  const [listStock, setListStock] = useState(null);
-  const [listCrypto, setListCrypto] = useState(null);
-  const [nameLine, setNameLine] = useState(null);
+  const [initCryptoList, setInitCryptoList] = useState(null);
 
   const checkStock = nbStock > 0;
   const checkCrypto = nbCrypto > 0;
   const checkStockAndCrypto = checkStock && checkCrypto;
 
   const classContainerForms = checkStockAndCrypto ? "container-two-forms" : "container-one-form";
-
+  const addMarginSoloForm = `operation-form ${!checkStockAndCrypto ? 'active-margin-bottom' : ''}`.trim();
+  const addMarginSeparator = `vertical-separator ${checkStockAndCrypto ? 'active-margin-bottom' : ''}`.trim();
+  
   const createForm = (value) => {
     const lines = [];
     let number = undefined;
@@ -36,128 +43,95 @@ function CreateExcel({nbStock, nbCrypto}) {
     return lines;
   }
   
-  const filterList = (name, value) => {
-    const chekStockName = name.includes('stock') && value.length >= 3; 
-    const chekCryptoName = name.includes('crypto') && value.length >= 2;
-    let newList = undefined;
-    let listWithDuplicata = undefined;
-
-    if(chekStockName){
-      listWithDuplicata = initStockList.filter((stock) => stock.name.toLowerCase().includes(value.toLowerCase()) || stock.symbol.toLowerCase().includes(value.toLowerCase()));
-      newList = [...new Map(listWithDuplicata.map((stock) => [stock.symbol, stock])).values()];
-
-      setListStock(newList);
-      setNameLine(name);
-    }
-    if(chekCryptoName){
-      newList = listCrypto?.filter((crypto) => crypto.name.includes(value))
-    }
-  }
-
-  const cryptoChange = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-
-    filterList(name, value);
-  }
-
   useEffect(() => {
-    checkStock && getListStock().then((list) => { setInitStockList(list?.data)});
-    checkCrypto && getListCrypto().then((list) => { setListCrypto(list)});
-  }, [checkCrypto, checkStock])
-
+    checkStock && getListStock().then((list) => { setInitStockList(list)});
+    checkCrypto && getListCrypto().then((list) => { setInitCryptoList(list)});
+  }, [checkCrypto, checkStock]);
+  
   return (
   <div className="top-container">
-    <div className={classContainerForms}>
-      {nbStock > 0 && initStockList ?
-        <div className="container-form">
-          <h2>{t('OPERATION.STOCK')}</h2>
-          <form className="operation-form" action="">
-            <div className="h3-form">
-              <h3>Name</h3>
-              <h3>Invest</h3>
-              <h3>Date</h3>
-            </div>
-            <ol>
-              { 
-                createForm('stock').map((line) => {
-                return (
-                  <li key={line}>
-                    <div>
-                      <input className="input-form" type="text" name={line} onChange={cryptoChange}/>
-                      <select name="pets" id="pet-select">
-                      {
-                        nameLine === line && listStock.map((stock) => {
-                          return (
-                            <>
-                              <option value={stock.symbol}>{stock.name} / {stock.symbol}</option>
-                            </>
-                          )
-                        })
-                      }
-                      </select>
-                    </div>
-                      <input className="input-form" type="text" name="value-stock" />
-                      <input type="date" />
-                      <button>X</button>
-                    </li>
-                  )
-                }) 
-              }
-            </ol>
-            <button>+</button>
-          </form>
-        </div> :
-        <h2>Loading...</h2>
-      }
-      { checkStockAndCrypto && <img src={separartor} /> }
-      { nbCrypto > 0 && 
-        <div className="container-form">
-          <h2>CRYPTO</h2>
-          <form className="operation-form" action="">
-            <div className="h3-form">
-              <h3>Name</h3>
-              <h3>Invest</h3>
-              <h3>Date</h3>
-            </div>
-            <ol>
-              { 
-                createForm('crypto').map((line) => {
-                  return (                
-                    <li key={line}>
-                        <select name="crypto">
-                          <option value="">--Please choose an option--</option>
-                          {
-                            listCrypto && listCrypto?.map((crypto) => {
-                              return (
-                                <>
-                                  <option value={crypto.symbol}>{crypto.name} / {crypto.symbol}</option>
-                                </>
-                              )
-                            })
-                          }
-                        </select>
-                        <input className="input-form" type="text" name="value-crypto"/>
-                        <input type="date" />
-                        <button>X</button>
-                    </li>
-                  )
-                })
-              }
-            </ol>
-            <button>+</button>
-          </form>
+    { (initStockList && initCryptoList) || initStockList || initCryptoList ?
+      <>
+        <div className={classContainerForms}>
+        {nbStock > 0 &&
+          <div className="container-form">
+            <h2>{t('OPERATION.STOCK')}</h2>
+            <form className={addMarginSoloForm} action="">
+              <div className="container-h3-form">
+                <h3>{t('OPERATION.NAME')}</h3>
+                <h3 className="invest-h3">{t('OPERATION.INVEST')}</h3>
+                <h3>Date</h3>
+              </div>
+              <ol>
+                {
+                  createForm('stock').map((line, id) => {
+                    return (
+                      <>
+                        <li key={line}>
+                          <div className="container-input-btn-form">
+                            <div className="container-input-form">
+                              <DataList initList={initStockList} line={line} placeholder={t('OPERATION.PLACEHOLDER.STOCK')} />
+                              <input className="input-form" type="text" name="value-stock" placeholder="0" />
+                              <input type="date" />
+                            </div>
+                            <button className="delete-line">+</button>
+                          </div>
+                        </li>
+                        { createForm('stock').length !== ++id && <img className='horizontal-separator' src={horizontalSeparartor} /> }
+                      </>
+                    )
+                  })
+                }
+              </ol>
+              <button className="add-line">+</button>
+            </form>
+          </div>
+        }
+        { checkStockAndCrypto && <div className={addMarginSeparator}></div> }
+        { nbCrypto > 0 && 
+          <div className="container-form">
+            <h2>CRYPTO</h2>
+            <form className={addMarginSoloForm} action="">
+              <div className="container-h3-form">
+                <h3>{t('OPERATION.NAME')}</h3>
+                <h3 className="invest-h3">{t('OPERATION.INVEST')}</h3>
+                <h3>Date</h3>
+              </div>
+              <ol>
+                {
+                  createForm('crypto').map((line, id) => {
+                    return (
+                      <>
+                        <li key={line}>
+                          <div className="container-input-btn-form">
+                            <div className="container-input-form">
+                              <DataList initList={initCryptoList} line={line} placeholder={t('OPERATION.PLACEHOLDER.CRYPTO')} />
+                              <input className="input-form" type="text" name="value-crypto" placeholder="0"/>
+                              <input type="date" />
+                            </div>
+                            <button className="delete-line">+</button>
+                          </div>
+                        </li>
+                        {createForm('crypto').length !== ++id && <img className='horizontal-separator' src={horizontalSeparartor} />}
+                      </>
+                    )
+                  })
+                }
+              </ol>
+              <button className="add-line">+</button>
+            </form>
+          </div>
+        }
         </div>
-      }
-    </div>
-    <button onClick={() => ""} className="btn">{t('OPERATION.CREATE_EXCEL')}</button>
+        <button onClick={() => ""} className="btn btn-form">{t('OPERATION.CREATE_EXCEL')}</button>
+      </> :
+      <div className="container-loading">
+        <img className="husky-thinks" src={huskyThinks} alt="Mascotte husky thinks" />
+        <h2 className="loading-h2">{t('OPERATION.LOADING')}</h2>
+      </div>
+    }
   </div>
   )
-}
-
-CreateExcel.propTypes  = {
-  nbStock: PropTypes.number,
-  nbCrypto: PropTypes.number,
 }
 
 export default CreateExcel;

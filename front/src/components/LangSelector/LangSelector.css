@@ -1,6 +1,8 @@
 .btn-lang {
   display: flex;
   align-items: center;
+  width: 85px;
+  padding: 7px 10px;
 }
 
 .container-lang {

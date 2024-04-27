@@ -1,8 +1,23 @@
- .top-container {
+.container-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.husky-thinks {
+  width: 165px;
+}
+
+.loading-h2 {
+  text-decoration: none;
+}
+ 
+.top-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
+  max-width: 1300px;
 }
 
 .container-two-forms {
@@ -15,29 +30,72 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+}
+
+h2 {
+  text-decoration: underline;
+  text-underline-position: under;
 }
 
 .operation-form {
   display: flex;
   flex-direction: column;
+  width: 550px;
+  align-items: center;
 }
 
-.h3-form {
+.container-h3-form {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
+  width: 100%;
+  height: 40px;
 }
 
-.operation-form li {
-  /* display: flex; */
-  margin: 15px 25px;
+.invest-h3 {
+  position: relative;
+  left: 23px;
 }
 
 .operation-form ol {
-  padding: 0;
+  padding: 0 20px 0 30px;
   display: flex;
   flex-direction: column;
-  max-height: 270px;
+  max-height: 240px;
   overflow-y: auto;
+  width: 100%;
+}
+
+.operation-form ol::-webkit-scrollbar {
+  width: 7px;
+}
+
+.operation-form ol::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.operation-form ol::-webkit-scrollbar-thumb {
+  background: #789FEC;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.operation-form ol::-webkit-scrollbar-thumb:hover {
+  background: #6b89c7;
+}
+
+.container-input-btn-form {
+  display: flex;
+}
+
+.container-input-form {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0px;
+  width: 94%;
+  margin-right: 15px;
 }
 
 .input-form {
@@ -49,6 +107,46 @@
   font-size: x-large;
 }
 
+.input-form::placeholder {
+  color: #635b5b;
+}
+
 .input-form:focus-visible {
   outline: none;
+}
+
+.delete-line {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: x-large;
+  transform: rotate(45deg);
+  padding: 0;
+}
+
+.horizontal-separator {
+  width: 270px;
+  margin: 15px 0 10px;
+  position: relative;
+  left: 100px;
+}
+
+.add-line {
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+  border-radius: 45px;
+  font-size: x-large;
+  background: var(--bg-button);
+  border: none;
+}
+
+.vertical-separator {
+  border: solid 1px;
+  background: #00000f;
+  margin-top: 18px;
+}
+
+.active-margin-bottom {
+  margin-bottom: 35px;
 }
