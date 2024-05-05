@@ -115,6 +115,14 @@ h2 {
   outline: none;
 }
 
+.error-invest {
+  border-bottom: solid 2px red;
+}
+
+.error-date {
+  outline: solid 2px red;
+}
+
 .delete-line {
   cursor: pointer;
   background: none;

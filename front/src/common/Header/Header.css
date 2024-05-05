@@ -18,6 +18,7 @@ header {
 .container-nav {
   display: flex;
   align-items: center;
+  z-index: 99;
 }
 
 .container-main-links {

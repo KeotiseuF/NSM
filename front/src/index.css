@@ -22,6 +22,14 @@ p, a {
   color: var(--color-text);
 }
 
+input {
+  cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
 .icon {
   width: var(--size-icon);
 }

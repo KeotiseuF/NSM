@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 
+import regex from "../../services/regex";
+
 import warning from "../../assets/images/warning.svg";
 
 import CreateExcel from "../../components/CreateExcel/CreateExcel";
@@ -30,11 +32,11 @@ function Operation() {
   } 
 
   const createForm = () => {
-    const regexNumber = new RegExp(/[0-9]+$/);
+    const regexNumber = new RegExp(regex.number);
     const checkIfNumber = regexNumber.test(nbStock) && regexNumber.test(nbCrypto);
-    const checkEgalZero = nbStock > 0 || nbCrypto > 0;
+    const checkSuperiorZero = nbStock > 0 || nbCrypto > 0;
 
-    if(checkIfNumber && checkEgalZero) {
+    if(checkIfNumber && checkSuperiorZero) {
       setHideHowMany(true);
     } else {
       window.alert(t('OPERATION.ENTER_FOUND'));
