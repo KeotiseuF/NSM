@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef, Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import PropTypes from 'prop-types';
+import { saveAs } from 'file-saver';
 
-import { getListCrypto, getListStock } from "../../services/request";
+import { getListCrypto, getListStock, createExcel } from "../../services/request";
 import regex from "../../services/regex";
 import DataList from "../../common/DataList/DataList";
 
@@ -108,6 +109,7 @@ function CreateExcel({nbStock, nbCrypto}) {
 
     e.preventDefault();
 
+    // Check where the client click because stop.propagation not work.
     if (clientX > 0 || clientY > 0) {
       if(idLine.includes("stock")) setStockLines(setupForm('deleteLine', idLine));
       if(idLine.includes("crypto")) setCryptoLines(setupForm('deleteLine', idLine));
@@ -300,7 +302,14 @@ function CreateExcel({nbStock, nbCrypto}) {
       }
     }
 
-    console.log('SEND : ', data);
+    createExcel(data).then((res) => {
+      const date = new Date();
+      const filename =  t('OPERATION.CREATE_EXCEL').includes('create') ? 
+        `NSM-report_${(date.getMonth() +1)}-${date.getDate()}-${date.getFullYear()}.xlsx`:
+        `NSM-rapport_${(date.getDate())}-${date.getMonth() + 1}-${date.getFullYear()}.xlsx`;
+
+      saveAs(res, filename.toString());
+    });
   }
 
   useEffect(() => {

@@ -20,7 +20,6 @@ function Operation() {
   const getValueHowMany = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    
     switch(name) {
       case 'nbStock':
         setNbStock(value);
@@ -29,7 +28,7 @@ function Operation() {
         setNbCrypto(value);
       break;
     }
-  } 
+  }
 
   const createForm = () => {
     const regexNumber = new RegExp(regex.number);
@@ -56,9 +55,9 @@ function Operation() {
                 {t('OPERATION.OR')}
                 <button onClick={() => setHideNoData(true)} className="btn">{t('OPERATION.CREATE')}</button>
               </div>
-            </div> 
+            </div>
           </> :
-          !checkValueHowMany ? 
+          !checkValueHowMany ?
             <div className="container-how-many">
               <div className="container-input-how-many">
                 <h1>{t('OPERATION.HOW_MANY_STOCK')}</h1>
@@ -72,7 +71,6 @@ function Operation() {
             </div> :
             <CreateExcel nbStock={Number(nbStock)} nbCrypto={Number(nbCrypto)} />
       }
-      
     </main>
   )
 }
