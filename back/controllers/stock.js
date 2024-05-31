@@ -14,9 +14,9 @@ exports.getStocks = async (req, res) => {
     const resizeList = [];
 
     listStock.data.forEach(list => resizeList.push({ name: list.name, symbol: list.symbol }));
-    
+
     console.log("First request stock list");
-    
+
     myCache.set("listStock", resizeList, 100); // Cache for 1 week to setup LATER : 604800. 
 
     res.send(resizeList);

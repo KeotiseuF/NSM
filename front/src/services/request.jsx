@@ -1,19 +1,21 @@
+const urlBack = import.meta.env.VITE_API_URL;
+console.log(urlBack)
 export function getListStock() {
-  return fetch("http://localhost:3001/stock")
+  return fetch(`${urlBack}/api_3/stock`)
   .then((res) => res.json())
   .then((res) => res)
   .catch((error) => {"Error GET stock list", error})
 }
 
 export function getListCrypto() {
-  return fetch("http://localhost:3001/crypto")
+  return fetch(`${urlBack}/api_3/crypto`)
   .then((res) => res.json())
   .then((res) => res)
   .catch((error) => {"Error GET crypto list", error})
 }
 
 export function createExcel(data) {
-  return fetch("http://localhost:3001/excel/create", {
+  return fetch(`${urlBack}/api_3/excel/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8'

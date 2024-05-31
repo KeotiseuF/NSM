@@ -75,7 +75,7 @@ function CreateExcel({nbStock, nbCrypto}) {
       setErrorsForm(takeOffError);
 
       if((stockLines.length === 0 && cryptoLines.length === 1) || (stockLines.length === 1 && cryptoLines.length === 0)) {
-        window.location.href = "http://localhost:3000/operation";
+        window.location.href = `${window.location.protocol}//${window.location.host}/operation`;
       } else if ((lines.length === 1 && stockLines.length > 0) || (lines.length === 1 && cryptoLines.length > 0)) {
         lines = [];
       } else {

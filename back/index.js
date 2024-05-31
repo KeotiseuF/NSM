@@ -2,9 +2,6 @@ const express = require('express');
 const cors = require('cors');
 require('@dotenvx/dotenvx').config();
 
-const bodyParser = require('body-parser');
-const jsonParser = bodyParser.json();
-
 const app = express();
 
 const port = process.env.PORT || 3000;
@@ -13,7 +10,9 @@ const stock = require('./routes/stock');
 const crypto = require('./routes/crypto');
 const excel = require('./routes/excel');
 
-app.use(cors(), jsonParser);
+app.use(cors(), express.json());
+
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/stock', stock);
 app.use('/crypto', crypto);
