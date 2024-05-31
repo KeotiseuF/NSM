@@ -6,7 +6,7 @@ import './App.css';
 
 function App() {
   const url = window.location.pathname;
-  const checkUrl = url === '/';
+  const checkUrl = url === 'keotiseuf.github.io/NSM';
 
   return (
     <>

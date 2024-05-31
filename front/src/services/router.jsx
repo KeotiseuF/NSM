@@ -7,7 +7,7 @@ import Operation from "../pages/Operation/Operation";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/NSM",
     element: <App />,
     children: [
       {
