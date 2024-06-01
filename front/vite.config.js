@@ -9,4 +9,5 @@ export default defineConfig({
     host: false,
   },
   envDir: './env',
+  base: '/NSM/'
 })
