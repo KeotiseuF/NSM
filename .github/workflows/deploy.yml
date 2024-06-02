@@ -43,7 +43,8 @@ jobs:
           cache-dependency-path: './front/package-lock.json'
       - name: Install dependencies
         run: npm ci
-        working-directory: ./front
+      - name: Install @rollup/rollup-linux-x64-gnu
+        run: npm i @rollup/rollup-linux-x64-gnu
       - name: Build
         run: npm run build
       - name: Setup Pages
