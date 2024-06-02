@@ -5,14 +5,13 @@ import Header from './common/Header/Header';
 import './App.css';
 
 function App() {
-  const url = window.location.pathname;
-  const checkUrl = url === 'keotiseuf.github.io/NSM';
-
+  const url = window.location.href;
+  const checkUrl = url === `${window.location.protocol}//${window.location.host}/NSM`;
   return (
     <>
       <Header />
       <Outlet />
-      { checkUrl && <Navigate to="/home" replace={true} /> }
+      { checkUrl && <Navigate to="/NSM/home" replace={true} /> }
     </>
   )
 }

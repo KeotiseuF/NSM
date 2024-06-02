@@ -51,7 +51,7 @@ function Operation() {
             <div className="container-import">
               <h1>{t('OPERATION.NO_DATA')}</h1>
               <div className="container-btn-import">
-                <button className="btn">{t('OPERATION.IMPORT')}</button>
+                <button className="btn" style={{color: 'grey'}}>{t('OPERATION.IMPORT')}</button>
                 {t('OPERATION.OR')}
                 <button onClick={() => setHideNoData(true)} className="btn">{t('OPERATION.CREATE')}</button>
               </div>
