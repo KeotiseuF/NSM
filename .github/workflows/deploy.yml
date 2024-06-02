@@ -35,9 +35,6 @@ jobs:
         uses: actions/checkout@v4
       - name: List files
         run: ls -la
-        shell: bash
-      - name: Change directory to front
-        run: cd front
       - name: List files in front
         run: ls -la front
       - name: Set up Node
