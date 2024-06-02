@@ -27,16 +27,12 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./front
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: List files
         run: ls -la
-      - name: List files in front
-        run: ls -la front
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
