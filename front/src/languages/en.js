@@ -1,4 +1,10 @@
 const EN = {
+  BOARD: {
+    TITLE: {
+      CHARTS: "CHARTS"
+    },
+    STOCK: "Stock"
+  },
   HEADER: {
     HOME: "HOME",
     LEARN: "LEARN",

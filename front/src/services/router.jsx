@@ -4,6 +4,7 @@ import App from '../App';
 import Error from '../pages/Error/Error';
 import Home from "../pages/Home/Home";
 import Operation from "../pages/Operation/Operation";
+import Board from "../pages/Board/Board";
 
 const router = createBrowserRouter([
   {
@@ -11,12 +12,21 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "home",
-        element: <Home />,
+        path: "board",
+        element: <Board />,
       },
       {
         path: "operation",
-        element: <Operation />,
+        children: [
+          {
+            path: "",
+            element:  <Operation />,
+          },
+          {
+            path: "board",
+            element: <Board />,
+          }
+        ],
       },
     ],
     errorElement: <Error />,

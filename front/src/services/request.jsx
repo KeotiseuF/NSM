@@ -1,5 +1,5 @@
 const urlBack = import.meta.env.VITE_API_URL;
-console.log(urlBack)
+
 export function getListStock() {
   return fetch(`${urlBack}/api_3/stock`)
   .then((res) => res.json())

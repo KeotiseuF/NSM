@@ -1,4 +1,10 @@
 const FR = {
+  BOARD: {
+    TITLE: {
+      CHARTS: "GRAPH"
+    },
+    STOCK: "Action"
+  },
   HEADER: {
     HOME: "ACCUEIL",
     LEARN: "APPRENDRE",

@@ -1,0 +1,1 @@
+export const toPercentage = (num, den) => (num / den * 100).toFixed(2);

@@ -26,10 +26,10 @@ function CreateExcel({nbStock, nbCrypto}) {
   const [errorsForm, setErrorsForm] = useState([]);
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [list, setList] = useState(null);
-  
+
   const refListStock = useRef(null);
   const refListCrypto = useRef(null);
- 
+
   const checkStock = nbStock > 0;
   const checkCrypto = nbCrypto > 0;
   const checkLists = stockLines.length > 0 && cryptoLines.length > 0;
@@ -37,11 +37,11 @@ function CreateExcel({nbStock, nbCrypto}) {
   const classContainerForms = checkLists ? "container-two-forms" : "container-one-form";
   const addMarginSoloForm = `operation-form ${!checkLists ? 'active-margin-bottom' : ''}`.trim();
   const addMarginSeparator = `vertical-separator ${checkLists ? 'active-margin-bottom' : ''}`.trim();
-  
+
   const setupForm = (status, idLine) => {
     let number = undefined;
     let lines = idLine.includes('stock') ? stockLines : cryptoLines;
-    
+
     if (idLine === 'stock') {
       number = nbStock;
     } else {
@@ -309,6 +309,7 @@ function CreateExcel({nbStock, nbCrypto}) {
         `NSM-rapport_${(date.getDate())}-${date.getMonth() + 1}-${date.getFullYear()}.xlsx`;
 
       saveAs(res, filename.toString());
+      localStorage.setItem('dataExcel', JSON.stringify(data));
     });
   }
 
@@ -357,7 +358,7 @@ function CreateExcel({nbStock, nbCrypto}) {
                                 onChange={onChange}
                                 list={list}
                               />
-                              <input 
+                              <input
                                 className={`input-form ${errorsForm.find((err) => err === `${line.id}_${t('OPERATION.INVEST').split(' ')[1]}`) ? 'error-invest' : ''}`.trim()}
                                 type="text"
                                 name={`${line.id}_${t('OPERATION.INVEST').split(' ')[1]}`}

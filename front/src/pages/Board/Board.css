@@ -1,0 +1,26 @@
+main {
+  align-items: start;
+}
+
+section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.container-title > div {
+  display: flex;
+}
+
+.container-chart {
+  width: 500px;
+  height: 600px;
+}
