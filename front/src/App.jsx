@@ -11,7 +11,7 @@ function App() {
     <>
       <Header />
       <Outlet />
-      { checkUrl && <Navigate to="/NSM/board" replace={true} /> }
+      { checkUrl && <Navigate to="/NSM/home" replace={true} /> }
     </>
   )
 }
