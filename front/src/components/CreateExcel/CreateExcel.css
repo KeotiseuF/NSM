@@ -145,7 +145,7 @@ h2 {
   height: 35px;
   border-radius: 45px;
   font-size: x-large;
-  background: var(--bg-button);
+  background: var(--primary-color);
   border: none;
 }
 

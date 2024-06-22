@@ -1,9 +1,14 @@
 const EN = {
   BOARD: {
-    TITLE: {
-      CHARTS: "CHARTS"
+    CHARTS: {
+      TITLE: "CHARTS"
     },
-    STOCK: "Stock"
+    INFOS: {
+      CRYPTOS: "Cryptos",
+      NAME: "NAME",
+      STOCKS: "Stocks",
+      SYMBOL: "SYMBOL",
+    }
   },
   HEADER: {
     HOME: "HOME",

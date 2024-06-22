@@ -1,9 +1,10 @@
 :root {
-  --main-bg-color: #B4C0EB;
-  --bg-button: #789FEC;
-  --size-icon: 20px;
   --border-radius-button: 10px;
   --color-text: #0c0b0b;
   --color-text-link: #fffefe;
   --color-underline-link: #fffefe;
+  --main-bg-color: #B4C0EB;
+  --primary-color: #789FEC;
+  --secondary-color: #B4C0EB;
+  --size-icon: 20px;
 }

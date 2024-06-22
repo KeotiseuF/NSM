@@ -1,9 +1,14 @@
 const FR = {
   BOARD: {
-    TITLE: {
-      CHARTS: "GRAPH"
+    CHARTS: {
+      TITLE: "GRAPH"
     },
-    STOCK: "Action"
+    INFOS: {
+      CRYPTOS: "Cryptos",
+      NAME: "NOM",
+      STOCKS: "Actions",
+      SYMBOL: "SYMBOLE",
+    }
   },
   HEADER: {
     HOME: "ACCUEIL",

@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import regex from "../../services/regex";
 
@@ -15,6 +16,8 @@ function Operation() {
   const [nbStock, setNbStock] = useState(0);
   const [nbCrypto, setNbCrypto] = useState(0);
   const [hideHowMany, setHideHowMany] = useState(false);
+  const naviagte = useNavigate();
+
   const checkValueHowMany = hideHowMany && (nbCrypto !== 0 || nbStock !== 0);
 
   const getValueHowMany = (e) => {
@@ -41,6 +44,12 @@ function Operation() {
       window.alert(t('OPERATION.ENTER_FOUND'));
     }
   }
+
+  useEffect(() => {
+    if(localStorage.getItem('dataExcel') && window.location.pathname === '/NSM/operation') {
+      naviagte('board');
+    }
+  }, [])
 
   return (
     <main>

@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, Fragment } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { saveAs } from 'file-saver';
 
@@ -19,6 +20,7 @@ CreateExcel.propTypes  = {
 
 function CreateExcel({nbStock, nbCrypto}) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [stockLines, setStockLines] = useState([]);
   const [cryptoLines, setCryptoLines] = useState([]);
   const [initStockList, setInitStockList] = useState(null);
@@ -150,11 +152,11 @@ function CreateExcel({nbStock, nbCrypto}) {
     arrayData.map((data) => {
       if(data.id === nameSplit[0]) {
         if(nameSplit[1] === 'date') {
-          data.date = value;
+          data.date = value.trim();
         } else if(nameSplit[1] === 'name') {
-          data.name = value;
+          data.name = value.trim();
         } else {
-          data.invest = value +' '+ checkDevise;
+          data.invest = value.trim() +' '+ checkDevise;
         }
       }
     });
@@ -310,6 +312,7 @@ function CreateExcel({nbStock, nbCrypto}) {
 
       saveAs(res, filename.toString());
       localStorage.setItem('dataExcel', JSON.stringify(data));
+      navigate('board'); 
     });
   }
 

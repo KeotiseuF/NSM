@@ -35,7 +35,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .btn {
-  background: var(--bg-button);
+  background: var(--primary-color);
   border: none;
   padding: 10px;
   border-radius: var(--border-radius-button);

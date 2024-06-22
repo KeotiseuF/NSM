@@ -15,13 +15,13 @@ function Board() {
     charts: 'total-charts',
     infos: 'total-infos',
   });
-  
+
   const dataStorage = JSON.parse(localStorage.getItem('dataExcel'));
   const propsData = Object.keys(dataStorage);
   const backgroundPieColors = colors(0.3);
   const borderPieColors = colors(1);
   const sections = [
-    {id: 'charts', title: t('BOARD.TITLE.CHARTS')},
+    {id: 'charts', title: t('BOARD.CHARTS.TITLE')},
     {id: 'infos', title: 'INFOS'}
   ];
   const pieBase = {
@@ -36,8 +36,22 @@ function Board() {
       },
     ],
   }
+  const assetCheckboxStyle = {
+    backgroundColor: 'var(--primary-color)',
+    fontWeight: 'bold',
+  };
 
   const [pieData, setPieData] = useState(pieBase);
+
+  const takeOffEmptyOfNumber = (string) => {
+    let number = string;
+    let lengthString = number.length;
+    const symbol = string.split(' ')[--lengthString];
+    
+    number = number.replaceAll(" ", '');
+    number = number.replace(symbol, '');
+    return number;
+  }  
 
   const addDataForChart = (themeAsset) => {
     let i = 0;
@@ -53,15 +67,19 @@ function Board() {
     pie.datasets[0].label = datasetsLabels[themeAsset];
 
     propsData.forEach((prop) => {
-      if(themeAsset !== 'total' ) return totalInvest = dataStorage[themeAsset];
+      if(themeAsset !== 'total') return totalInvest = dataStorage[themeAsset];
       totalInvest = dataStorage[prop].concat(totalInvest);
     });
     totalInvest.forEach((invest) => {
-      total += Number(invest.invest.split(' ')[0]);
+      const checkNumber = invest.invest.split(' ').length > 2 ? takeOffEmptyOfNumber(invest.invest) : Number(invest.invest.split(' ')[0]);
+      total += checkNumber;
 
-      pie.labels.push(invest.name.split('/')[1]);
+      pie.labels.push(invest.name.split('/')[1].toUpperCase());
     });
-    totalInvest.forEach((invest) => pie.datasets[0].data.push(toPercentage(Number(invest.invest.split(' ')[0]), total)));
+    totalInvest.forEach((invest) => {
+      const checkNumber = invest.invest.split(' ').length > 2 ? takeOffEmptyOfNumber(invest.invest) : Number(invest.invest.split(' ')[0]);
+      pie.datasets[0].data.push(toPercentage(checkNumber, total))
+    });
 
     pie.datasets[0].data.forEach(() => {
       pie.datasets[0].backgroundColor.push(backgroundPieColors[i]);
@@ -73,25 +91,59 @@ function Board() {
 
   const addDataForInfo = (themeAsset) => {
     let totalInvest = [];
+    const totalLine = {
+      invest: 0,
+      nbAsset: 0,
+      symbol: '',
+      id: 0,
+    };
+    const numberFormat = new Intl.NumberFormat('fr-EU');
 
     propsData.forEach((prop) => {
-      if(themeAsset !== 'total' ) return totalInvest = dataStorage[themeAsset];
+      if(themeAsset !== 'total') return totalInvest = dataStorage[themeAsset];
       totalInvest = dataStorage[prop].concat(totalInvest);
     });
+    const indexSymbol = --totalInvest[0].invest.split(' ').length;
+    totalLine.symbol = totalInvest[0].invest.split(' ')[indexSymbol];
+    totalLine.id = ++totalInvest.length;
 
-    return totalInvest.map((data, id)=> {
-      return (
-        <tr key={`line-${id}`}>
-          <th scope="row">{data.name.split('/')[0]}</th>
-          <td>{data.name.split('/')[1]}</td>
-          <td>{data.date}</td>
-          <th scope="row">{data.invest}</th>
-          <th scope="row">prix</th>
-          <th scope="row">nm asset</th>
-          <td>{++id}</td>
-        </tr>
-      )
-    })
+    return (
+      <>
+        <tbody>
+          { totalInvest.map((data, id)=> {
+            const checkNumber = data.invest.split(' ').length > 2 ? 
+            takeOffEmptyOfNumber(data.invest) : 
+            Number(data.invest.split(' ')[0]);
+
+            totalLine.invest += checkNumber;
+
+            return (
+              <tr key={`line-${id}`}>
+                <th scope="row">{data.name.split('/')[0]}</th>
+                <td>{data.name.split('/')[1].toUpperCase()}</td>
+                <td>{data.date}</td>
+                <td>{data.invest}</td>
+                {/* <td>Prix</td>
+                <td>Nm asset</td> */}
+                <td>{++id}</td>
+              </tr>
+            )
+          })}
+        </tbody>
+        <tfoot>
+          <tr>
+            <th scope="row">Total</th>
+            <td></td>
+            <td></td>
+            <td>{numberFormat.format(totalLine.invest) + ' ' + totalLine.symbol}</td>
+            {/* <td></td>
+            <td>{totalLine.nbAsset}</td> */}
+            <td>{totalLine.id}</td>
+          </tr>
+        </tfoot>
+      </>
+    
+    )
   };
 
   const initData = () => {
@@ -114,8 +166,6 @@ function Board() {
 
   useEffect(() => {
     initData();
-    fetch('https://www.coingecko.com/en/coins/bitcoin/historical_data?start=2024-05-20&end=2024-05-20')
-    .then((res) => console.log(res))
   }, [])
 
   return (
@@ -125,10 +175,10 @@ function Board() {
           return ( 
             <section key={section.id}>
               <div className="container-title">
-                <h1>{section.title}</h1>
+                <h1 className="title-section">{section.title}</h1>
                 { severalAsset &&
                   <div>
-                    <div>
+                    <div className="container-asset-checkbox">
                       <input
                         type="checkbox"
                         name={`total-${section.id}`}
@@ -136,21 +186,35 @@ function Board() {
                         checked={`total-${section.id}` === check[section.id]}
                         onChange={dataToDisplay}
                         disabled={`total-${section.id}` === check[section.id]}
+                        className="asset-checkbox"
                       />
-                      <label htmlFor={`total-${section.id}`}>Total</label>
+                      <label
+                        htmlFor={`total-${section.id}`}
+                        className="asset-label"
+                        style={`total-${section.id}` === check[section.id] ? assetCheckboxStyle : {}}
+                      >
+                        Total
+                      </label>
                     </div>
                     {
                       propsData.map((themeAsset) => {
                         return (
-                          <div key={themeAsset}>
+                          <div key={themeAsset} className="container-asset-checkbox">
                             <input
                               type="checkbox"
                               name={`${themeAsset}-${section.id}`} id={`${themeAsset}-${section.id}`}
                               checked={`${themeAsset}-${section.id}` === check[section.id]}
                               onChange={dataToDisplay}
-                              disabled={`${themeAsset}-${section.id}` === check[section.id]} 
+                              disabled={`${themeAsset}-${section.id}` === check[section.id]}
+                              className="asset-checkbox"
                             />
-                            <label htmlFor={`${themeAsset}-${section.id}`}>{themeAsset}</label>
+                            <label
+                              htmlFor={`${themeAsset}-${section.id}`}
+                              className="asset-label"
+                              style={`${themeAsset}-${section.id}` === check[section.id] ? assetCheckboxStyle : {}}
+                            >
+                              {t(`BOARD.INFOS.${themeAsset.toUpperCase()}`)}
+                            </label>
                           </div>
                         )
                       })
@@ -166,24 +230,16 @@ function Board() {
                   <table>
                     <thead>
                       <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Symbol</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Invest</th>
-                        <th scope="col">Price buy day</th>
-                        <th scope="col">Number asset</th>
-                        <th scope="col">Id</th>
+                        <th scope="col">{t('BOARD.INFOS.NAME')}</th>
+                        <th scope="col">{t('BOARD.INFOS.SYMBOL')}</th>
+                        <th scope="col">DATE</th>
+                        <th scope="col">INVEST</th>
+                        {/* <th scope="col">PRICE BUY DAY</th>
+                        <th scope="col">NUMBER ASSET</th> */}
+                        <th scope="col">ID</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      { addDataForInfo(check.infos.split('-')[0]) }
-                    </tbody>
-                    <tfoot>
-                      <tr>
-                        <th scope="row" colSpan="2">Total</th>
-                        <td>50</td>
-                      </tr>
-                    </tfoot>
+                    { addDataForInfo(check.infos.split('-')[0]) }
                   </table>
                 </div>
               }

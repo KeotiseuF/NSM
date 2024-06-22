@@ -14,7 +14,7 @@
 .container-lang li {
   margin: 0;
   list-style: none;
-  background: var(--bg-button);
+  background: var(--primary-color);
   border: none;
   width: 85px;
 }
