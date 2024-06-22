@@ -224,7 +224,7 @@ function Board() {
               </div>
               { section.id === 'charts' ?
                 <div className="container-chart">
-                  <Pie data={pieData} />
+                  {pieData.labels.length !== 0 && <Pie data={pieData} />}
                 </div> :
                 <div className="container-info">
                   <table>
