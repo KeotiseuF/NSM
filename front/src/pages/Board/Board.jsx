@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import colors from "../../services/colors";
@@ -10,21 +11,14 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 function Board() {
   const { t } = useTranslation();
-  const [severalAsset, setSeveralAsset] = useState(false);
+  const navigate = useNavigate();
+  const [dataExcel, setDataExcel] = useState();
+  const [propsDataExcel, setPropsDataExcel] = useState();
   const [check, setCheck] = useState({
     charts: 'total-charts',
     infos: 'total-infos',
   });
-
-  const dataStorage = JSON.parse(localStorage.getItem('dataExcel'));
-  const propsData = Object.keys(dataStorage);
-  const backgroundPieColors = colors(0.3);
-  const borderPieColors = colors(1);
-  const sections = [
-    {id: 'charts', title: t('BOARD.CHARTS.TITLE')},
-    {id: 'infos', title: 'INFOS'}
-  ];
-  const pieBase = {
+  const [pieData, setPieData] = useState({
     labels: [],
     datasets: [
       {
@@ -35,13 +29,18 @@ function Board() {
         borderWidth: 2,
       },
     ],
-  }
+  });
+
+  const backgroundPieColors = colors(0.3);
+  const borderPieColors = colors(1);
+  const sections = [
+    {id: 'charts', title: t('BOARD.CHARTS.TITLE')},
+    {id: 'infos', title: 'INFOS'}
+  ];
   const assetCheckboxStyle = {
     backgroundColor: 'var(--primary-color)',
     fontWeight: 'bold',
   };
-
-  const [pieData, setPieData] = useState(pieBase);
 
   const takeOffEmptyOfNumber = (string) => {
     let number = string;
@@ -51,43 +50,62 @@ function Board() {
     number = number.replaceAll(" ", '');
     number = number.replace(symbol, '');
     return number;
-  }  
+  }
 
-  const addDataForChart = (themeAsset) => {
+  const initDatasets = useCallback((themeAsset, pie) => {
+    const datasetsLabels = {
+      total: t('BOARD.CHARTS.ON_TOTAL'),
+      stocks: t('BOARD.CHARTS.ON_STOCK'),
+      cryptos: t('BOARD.CHARTS.ON_CRYPTO'),
+    };
+
+    return pieData.datasets.map((data) => {
+      return {
+        ...data, 
+        label: datasetsLabels[themeAsset],
+        data: pie.data,
+        backgroundColor: pie.backgroundColor,
+        borderColor: pie.borderColor,
+      };
+    })
+  }, [t])
+
+  const addDataForChart = useCallback((themeAsset, propArray, dataExcel) => {
     let i = 0;
     let total = 0;
-    let totalInvest = [];
-    const datasetsLabels = {
-      total: 'On total (%)',
-      stocks: 'On stock (%)',
-      cryptos: 'On crypto (%)',
-    };
-    const pie = pieBase;
+    let pie = {
+      totalInvest: [],
+      labels: [],
+      data: [],
+      backgroundColor: [],
+      borderColor: [],
+    }
 
-    pie.datasets[0].label = datasetsLabels[themeAsset];
+    const getNumber = (text) => text.invest.split(' ').length > 2 ? takeOffEmptyOfNumber(text.invest) : Number(text.invest.split(' ')[0]);
 
-    propsData.forEach((prop) => {
-      if(themeAsset !== 'total') return totalInvest = dataStorage[themeAsset];
-      totalInvest = dataStorage[prop].concat(totalInvest);
+    propArray.forEach((prop) => {
+      if(themeAsset !== 'total') return pie.totalInvest = dataExcel[themeAsset];
+      pie.totalInvest = dataExcel[prop].concat(pie.totalInvest);
     });
-    totalInvest.forEach((invest) => {
-      const checkNumber = invest.invest.split(' ').length > 2 ? takeOffEmptyOfNumber(invest.invest) : Number(invest.invest.split(' ')[0]);
-      total += checkNumber;
+    pie.totalInvest.forEach((invest, id) => {
+      total += getNumber(invest);
 
       pie.labels.push(invest.name.split('/')[1].toUpperCase());
-    });
-    totalInvest.forEach((invest) => {
-      const checkNumber = invest.invest.split(' ').length > 2 ? takeOffEmptyOfNumber(invest.invest) : Number(invest.invest.split(' ')[0]);
-      pie.datasets[0].data.push(toPercentage(checkNumber, total))
+      if(pie.totalInvest.length === ++id) pie.totalInvest.forEach((invest) => pie.data.push(toPercentage(getNumber(invest), total)));
     });
 
-    pie.datasets[0].data.forEach(() => {
-      pie.datasets[0].backgroundColor.push(backgroundPieColors[i]);
-      pie.datasets[0].borderColor.push(borderPieColors[i]);
+    pie.data.forEach(() => {
+      pie.backgroundColor.push(backgroundPieColors[i]);
+      pie.borderColor.push(borderPieColors[i]);
       i++;
     })
-    setPieData(pie);
-  };
+
+    setPieData({
+      ...pieData, 
+      labels: pie.labels,
+      datasets: initDatasets(themeAsset, pie),
+    });
+  }, [initDatasets]);
 
   const addDataForInfo = (themeAsset) => {
     let totalInvest = [];
@@ -98,10 +116,12 @@ function Board() {
       id: 0,
     };
     const numberFormat = new Intl.NumberFormat('fr-EU');
+    const dataExcel = JSON.parse(localStorage.getItem('dataExcel'));
+    const propsDataExcel = Object.keys(dataExcel);
 
-    propsData.forEach((prop) => {
-      if(themeAsset !== 'total') return totalInvest = dataStorage[themeAsset];
-      totalInvest = dataStorage[prop].concat(totalInvest);
+    propsDataExcel.forEach((prop) => {
+      if(themeAsset !== 'total') return totalInvest = dataExcel[themeAsset];
+      totalInvest = dataExcel[prop].concat(totalInvest);
     });
     const indexSymbol = --totalInvest[0].invest.split(' ').length;
     totalLine.symbol = totalInvest[0].invest.split(' ')[indexSymbol];
@@ -142,16 +162,14 @@ function Board() {
           </tr>
         </tfoot>
       </>
-    
     )
   };
 
-  const initData = () => {
-    if(propsData.length === 1 && propsData[0] === 'stocks') return addDataForChart('stocks');
-    if(propsData.length === 1 && propsData[0] === 'cryptos') return addDataForChart('cryptos');
-    setSeveralAsset(true);
-    addDataForChart('total');
-  }
+  const initData = useCallback((propArray, dataExcel) => {
+    if(propArray.length === 1 && propArray[0] === 'stocks') return addDataForChart('stocks', propArray, dataExcel);
+    if(propArray.length === 1 && propArray[0] === 'cryptos') return addDataForChart('cryptos', propArray, dataExcel);
+    addDataForChart('total', propArray, dataExcel);
+  }, [addDataForChart])
 
   const dataToDisplay = (element) => {
     const id = element.target.id;
@@ -159,24 +177,37 @@ function Board() {
 
     if(id.includes('charts')) {
       setCheck({...check, charts: id});
-      addDataForChart(asset);
+      addDataForChart(asset, propsDataExcel, dataExcel);
     }
     if(id.includes('infos')) setCheck({...check, infos: id});
   }
 
   useEffect(() => {
-    initData();
-  }, [])
+    const dataExcel = JSON.parse(localStorage.getItem('dataExcel'));
+    const propsDataExcel = Object.keys(dataExcel);
+
+    setDataExcel(dataExcel);
+    setPropsDataExcel(propsDataExcel);
+    initData(propsDataExcel, dataExcel);
+  }, [initData])
+
+  const recreate = () => {
+    localStorage.removeItem('dataExcel');
+    navigate('..');
+  }
 
   return (
     <main>
       {
         sections.map((section) => {
-          return ( 
+          return (
             <section key={section.id}>
-              <div className="container-title">
-                <h1 className="title-section">{section.title}</h1>
-                { severalAsset &&
+              <div className="container-section">
+                <div className="container-title">
+                  <h1 className="title-section">{section.title}</h1>
+                  {section.id === 'charts' && <input type="button" value="Reset" onClick={recreate} />}
+                </div>
+                { propsDataExcel && propsDataExcel.length > 1 && 
                   <div>
                     <div className="container-asset-checkbox">
                       <input
@@ -197,7 +228,7 @@ function Board() {
                       </label>
                     </div>
                     {
-                      propsData.map((themeAsset) => {
+                      propsDataExcel.map((themeAsset) => {
                         return (
                           <div key={themeAsset} className="container-asset-checkbox">
                             <input
@@ -224,7 +255,7 @@ function Board() {
               </div>
               { section.id === 'charts' ?
                 <div className="container-chart">
-                  {pieData.labels.length !== 0 && <Pie data={pieData} />}
+                  {pieData.datasets[0].data.length > 0 && <Pie data={pieData} />}
                 </div> :
                 <div className="container-info">
                   <table>

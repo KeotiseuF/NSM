@@ -17,8 +17,8 @@ function Header() {
         <div className="container-nav">
           <nav>
             <ul className='container-main-links'>
-              <li><NavLink className="main-links" to="/NSM/home">{t('HEADER.HOME')}</NavLink></li>
-              <li><NavLink className="main-links" to="/NSM/operation">{t('HEADER.OPERATION')}</NavLink></li>
+              <li><NavLink className="main-links" to="/home">{t('HEADER.HOME')}</NavLink></li>
+              <li><NavLink className="main-links" to="/operation">{t('HEADER.OPERATION')}</NavLink></li>
             </ul>
           </nav>
         </div>

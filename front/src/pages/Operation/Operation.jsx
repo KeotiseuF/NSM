@@ -46,7 +46,7 @@ function Operation() {
   }
 
   useEffect(() => {
-    if(localStorage.getItem('dataExcel') && window.location.pathname === '/NSM/operation') {
+    if(localStorage.getItem('dataExcel') && window.location.pathname === '/operation') {
       naviagte('board');
     }
   }, [])

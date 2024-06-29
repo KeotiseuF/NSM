@@ -6,12 +6,12 @@ import './App.css';
 
 function App() {
   const url = window.location.href;
-  const checkUrl = url === `${window.location.protocol}//${window.location.host}/NSM/`;
+  const checkUrl = url === `${window.location.protocol}//${window.location.host}/`;
   return (
     <>
       <Header />
       <Outlet />
-      { checkUrl && <Navigate to="/NSM/home" replace={true} /> }
+      { checkUrl && <Navigate to="/home" replace={true} /> }
     </>
   )
 }

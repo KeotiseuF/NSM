@@ -231,7 +231,7 @@ function CreateExcel({nbStock, nbCrypto}) {
   }
 
   const checkValueValid = (list, value) => list?.find((line) => `${line.name.toLowerCase()} / ${line.symbol.toLowerCase()}` === value.toLowerCase());
-  
+
   const onChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;

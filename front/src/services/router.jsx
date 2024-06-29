@@ -8,7 +8,7 @@ import Board from "../pages/Board/Board";
 
 const router = createBrowserRouter([
   {
-    path: "/NSM",
+    path: "/",
     element: <App />,
     children: [
       {

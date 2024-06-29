@@ -1,7 +1,10 @@
 const EN = {
   BOARD: {
     CHARTS: {
-      TITLE: "CHARTS"
+      TITLE: "CHARTS",
+      ON_TOTAL: 'On total (%)',
+      ON_STOCK: 'On stock (%)',
+      ON_CRYPTO: 'On crypto (%)',
     },
     INFOS: {
       CRYPTOS: "Cryptos",

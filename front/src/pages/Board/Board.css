@@ -45,15 +45,32 @@ section {
   align-items: center;
 }
 
-.container-title {
+.container-section {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
 }
 
-.container-title > div {
+.container-section > div {
   display: flex;
+}
+
+.container-title {
+  display: flex;
+  align-items: center;
+  width: 215px;
+  justify-content: space-between;
+}
+
+.container-title > input {
+  background: none;
+  padding-bottom: 20px;
+  height: 20px;
+  color: red;
+  border: 2px solid red;
+  border-radius: 25px;
+  text-align: center;
 }
 
 .container-chart {
