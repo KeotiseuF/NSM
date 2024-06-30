@@ -166,8 +166,8 @@ function Board() {
   };
 
   const initData = useCallback((propArray, dataExcel) => {
-    if(propArray.length === 1 && propArray[0] === 'stocks') return addDataForChart('stocks', propArray, dataExcel);
-    if(propArray.length === 1 && propArray[0] === 'cryptos') return addDataForChart('cryptos', propArray, dataExcel);
+    if(check.charts === 'stocks-charts' || propArray.length === 1 && propArray[0] === 'stocks') return addDataForChart('stocks', propArray, dataExcel);
+    if(check.charts === 'cryptos-charts' || propArray.length === 1 && propArray[0] === 'cryptos') return addDataForChart('cryptos', propArray, dataExcel);
     addDataForChart('total', propArray, dataExcel);
   }, [addDataForChart])
 
@@ -183,6 +183,7 @@ function Board() {
   }
 
   useEffect(() => {
+    console.log(check)
     const dataExcel = JSON.parse(localStorage.getItem('dataExcel'));
     const propsDataExcel = Object.keys(dataExcel);
 
