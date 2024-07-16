@@ -27,3 +27,16 @@ export function createExcel(data) {
   .then((res) => res)
   .catch((error) => {"Error GET crypto list", error})
 }
+
+export function getHistoricalData(data) {
+  return fetch(`${urlBack}/api_3/crypto/historical-data`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8'
+    },
+    body: JSON.stringify(data)
+  })
+  .then((res) => res.json())
+  .then((res) => res)
+  .catch((error) => {"Error historical data", error})
+}

@@ -7,6 +7,7 @@ import { saveAs } from 'file-saver';
 import { getListCrypto, getListStock, createExcel } from "../../services/request";
 import regex from "../../services/regex";
 import DataList from "../../common/DataList/DataList";
+import DotLoading from "../../common/DotLoading/DotLoading";
 
 import horizontalSeparartor from "../../assets/images/horizontal-separator.svg";
 import huskyThinks from "../../assets/images/husky-thinks.png";
@@ -78,7 +79,7 @@ function CreateExcel({nbStock, nbCrypto}) {
 
       if((stockLines.length === 0 && cryptoLines.length === 1) || (stockLines.length === 1 && cryptoLines.length === 0)) {
         window.location.href = `${window.location.protocol}//${window.location.host}/operation`;
-      } else if ((lines.length === 1 && stockLines.length > 0) || (lines.length === 1 && cryptoLines.length > 0)) {
+      } else if (lines.length === 1 && (stockLines.length > 0 || cryptoLines.length > 0)) {
         lines = [];
       } else {
         lines = lines.filter((line) => line.id !== idLine);
@@ -108,13 +109,14 @@ function CreateExcel({nbStock, nbCrypto}) {
     const idLine = e.target.value;
     const clientX = e.clientX;
     const clientY = e.clientY;
+    const newLines = setupForm('deleteLine', idLine);
 
     e.preventDefault();
-
     // Check where the client click because stop.propagation not work.
     if (clientX > 0 || clientY > 0) {
-      if(idLine.includes("stock")) setStockLines(setupForm('deleteLine', idLine));
-      if(idLine.includes("crypto")) setCryptoLines(setupForm('deleteLine', idLine));
+      if(idLine.includes("stock")) setStockLines(newLines);
+      if(idLine.includes("crypto")) setCryptoLines(newLines);
+      enableButton(errorsForm, newLines, idLine);
     }
   }
 
@@ -168,34 +170,32 @@ function CreateExcel({nbStock, nbCrypto}) {
     }
   }
 
-  const enableButton = (arrayErr) => {
+  const enableButton = (arrayErr, lines, id) => {
+    const assetIsStock = id.includes('stock');
+    const assetIsCrypto = id.includes('crypto');
+    const linesEmpty = lines.length === 0;
+
+    let check = true;
     const checkName = (line) => line.name !== '';
     const checkInvest = (line) => line.invest !== '0';
     const checkDate = (line) => line.date !== '';
+    const checkAll = (toCheck) => toCheck.every(checkName) && toCheck.every(checkInvest) && toCheck.every(checkDate);
 
     if(arrayErr.length === 0) {
-      if(checkLists) {
-        stockLines.every(checkName) &&
-        stockLines.every(checkInvest) &&
-        stockLines.every(checkDate) &&
+      if(assetIsStock && cryptoLines.length >= 1) {
+          if(!linesEmpty) check = checkAll(lines);
 
-        cryptoLines.every(checkName) &&
-        cryptoLines.every(checkInvest) &&
-        cryptoLines.every(checkDate) &&
+          check &&
+          checkAll(cryptoLines) && 
+          setButtonDisabled(false);
+      } else if (assetIsCrypto && stockLines.length >= 1) {
+        if(!linesEmpty) check = checkAll(lines);
 
-        setButtonDisabled(false);
-      } else if (stockLines.length > 0) {
-        stockLines.every(checkName) &&
-        stockLines.every(checkInvest) &&
-        stockLines.every(checkDate) &&
-
-        setButtonDisabled(false);
-
-      } else if (cryptoLines.length > 0) {
-        cryptoLines.every(checkName) &&
-        cryptoLines.every(checkInvest) &&
-        cryptoLines.every(checkDate) &&
-
+          check &&
+          checkAll(stockLines) && 
+          setButtonDisabled(false);
+      } else if (!linesEmpty && (assetIsStock || assetIsCrypto)) {
+        checkAll(lines);
         setButtonDisabled(false);
 
       } else {
@@ -246,12 +246,12 @@ function CreateExcel({nbStock, nbCrypto}) {
 
       if(checkValueValid(checkNameList, value)) {
         arrayErr = errorsForm.filter((err) => err !== name);
-        
+
         setErrorsForm(arrayErr);
         getData(name, value);
       } else {
         const findErr = errorsForm.find((err) => err === name);
-  
+
         if(!findErr) {
           arrayErr.push(name);
           setErrorsForm([...errorsForm, name]);
@@ -281,7 +281,9 @@ function CreateExcel({nbStock, nbCrypto}) {
       }
     }
 
-    enableButton(arrayErr);
+    const lines = name.includes('stock') ? stockLines : cryptoLines;
+    const typeAsset = name.includes('stock') ? 'stock' : 'crypto';
+    enableButton(arrayErr, lines, typeAsset);
   }
 
   const create = (e) => {
@@ -434,7 +436,7 @@ function CreateExcel({nbStock, nbCrypto}) {
       </> :
       <div className="container-loading">
         <img className="husky-thinks" src={huskyThinks} alt="Mascotte husky thinks" />
-        <h2 className="loading-h2">{t('OPERATION.LOADING')}</h2>
+        <h2 className="loading-h2">{t('OPERATION.LOADING')}<DotLoading /></h2>
       </div>
     }
   </div>

@@ -7,8 +7,11 @@ const FR = {
       ON_CRYPTO: 'Sur crypto (%)',
     },
     INFOS: {
+      BUY_PRICE: "PRIX D'ACHAT",
       CRYPTOS: "Cryptos",
       NAME: "NOM",
+      NUMBER_ASSET: "NOMBRE D'ACTIF",
+      NO_DATA: "Pas de données",
       STOCKS: "Actions",
       SYMBOL: "SYMBOLE",
     }
@@ -26,7 +29,7 @@ const FR = {
     HOW_MANY_STOCK: "Combien d'action as-tu ?",
     IMPORT: "Importer",
     INVEST: "Invest (€)",
-    LOADING: "Chargement...",
+    LOADING: "Chargement",
     NAME: "Nom",
     NEXT: "Suivant",
     NO_DATA: "PAS DE DONNÉE",

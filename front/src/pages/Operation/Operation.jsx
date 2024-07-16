@@ -3,12 +3,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import regex from "../../services/regex";
-
 import warning from "../../assets/images/warning.svg";
-
 import CreateExcel from "../../components/CreateExcel/CreateExcel";
 
-import './Operation.css'
+import './Operation.css';
 
 function Operation() {
   const { t } = useTranslation();
@@ -16,7 +14,7 @@ function Operation() {
   const [nbStock, setNbStock] = useState(0);
   const [nbCrypto, setNbCrypto] = useState(0);
   const [hideHowMany, setHideHowMany] = useState(false);
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
 
   const checkValueHowMany = hideHowMany && (nbCrypto !== 0 || nbStock !== 0);
 
@@ -47,7 +45,7 @@ function Operation() {
 
   useEffect(() => {
     if(localStorage.getItem('dataExcel') && window.location.pathname === '/operation') {
-      naviagte('board');
+      navigate('board');
     }
   }, [])
 

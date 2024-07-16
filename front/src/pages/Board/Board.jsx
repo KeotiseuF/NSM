@@ -1,19 +1,27 @@
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
-import colors from "../../services/colors";
+
+import { getHistoricalData } from "../../services/request";
 import { toPercentage } from "../../services/math";
+import colors from "../../services/colors";
+
+import DotLoading from '../../common/DotLoading/DotLoading';
+
 import './Board.css';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function Board() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+
   const [dataExcel, setDataExcel] = useState();
   const [propsDataExcel, setPropsDataExcel] = useState();
+  const [initDisplay, setInitDisplay] = useState(false);
+  const [lang, setLang] = useState('');
   const [check, setCheck] = useState({
     charts: 'total-charts',
     infos: 'total-infos',
@@ -91,7 +99,7 @@ function Board() {
       total += getNumber(invest);
 
       pie.labels.push(invest.name.split('/')[1].toUpperCase());
-      if(pie.totalInvest.length === ++id) pie.totalInvest.forEach((invest) => pie.data.push(toPercentage(getNumber(invest), total)));
+      if(pie.totalInvest.length === id + 1) pie.totalInvest.forEach((invest) => pie.data.push(toPercentage(getNumber(invest), total)));
     });
 
     pie.data.forEach(() => {
@@ -107,44 +115,61 @@ function Board() {
     });
   }, [initDatasets]);
 
-  const addDataForInfo = (themeAsset) => {
+  const addDataForInfo = (themeAsset, invest) => {
     let totalInvest = [];
     const totalLine = {
       invest: 0,
       nbAsset: 0,
-      symbol: '',
+      buyPrice: 0,
+      // symbol: '',
       id: 0,
     };
-    const numberFormat = new Intl.NumberFormat('fr-EU');
+    const numberFormat = new Intl.NumberFormat('en-US');
     const dataExcel = JSON.parse(localStorage.getItem('dataExcel'));
     const propsDataExcel = Object.keys(dataExcel);
+    let assets = invest || dataExcel;
 
     propsDataExcel.forEach((prop) => {
-      if(themeAsset !== 'total') return totalInvest = dataExcel[themeAsset];
-      totalInvest = dataExcel[prop].concat(totalInvest);
+      if(themeAsset !== 'total') return totalInvest = assets[themeAsset];
+      totalInvest = assets[prop].concat(totalInvest);
     });
-    const indexSymbol = --totalInvest[0].invest.split(' ').length;
+
+    const indexSymbol = totalInvest[0].invest.split(' ').length - 1;
     totalLine.symbol = totalInvest[0].invest.split(' ')[indexSymbol];
-    totalLine.id = ++totalInvest.length;
+    totalLine.id = totalInvest.length + 1;
+    let noData = (num, id) => {
+      if(num === '' || id.includes('stock')) return t('BOARD.INFOS.NO_DATA');
+      return <DotLoading size='xx-large' />
+    };
 
     return (
       <>
         <tbody>
           { totalInvest.map((data, id)=> {
-            const checkNumber = data.invest.split(' ').length > 2 ? 
-            takeOffEmptyOfNumber(data.invest) : 
+            const checkNumber = data.invest.split(' ').length > 2 ?
+            takeOffEmptyOfNumber(data.invest) :
             Number(data.invest.split(' ')[0]);
 
-            totalLine.invest += checkNumber;
+            let buyPrice = 0;
+            let nbAsset = 0;
+            let getValueInvest = data.buyPrice?.split('$')[1];
+            
+            if(data.buyPrice) {
+              buyPrice = Number(getValueInvest.replace(',', getValueInvest.includes(',') && getValueInvest.includes('.') ? '' : '.'));
+              nbAsset = buyPrice * checkNumber;
+            }
 
+            totalLine.buyPrice += buyPrice;
+            totalLine.nbAsset += nbAsset;
+            totalLine.invest += checkNumber;
             return (
               <tr key={`line-${id}`}>
                 <th scope="row">{data.name.split('/')[0]}</th>
                 <td>{data.name.split('/')[1].toUpperCase()}</td>
                 <td>{data.date}</td>
+                <td>{data.buyPrice ? `${numberFormat.format(buyPrice)} $` : noData(data.buyPrice, data.id) }</td>
+                <td>{data.buyPrice ? numberFormat.format(nbAsset) : noData(data.buyPrice, data.id) }</td>
                 <td>{data.invest}</td>
-                {/* <td>Prix</td>
-                <td>Nm asset</td> */}
                 <td>{++id}</td>
               </tr>
             )
@@ -155,9 +180,9 @@ function Board() {
             <th scope="row">Total</th>
             <td></td>
             <td></td>
-            <td>{numberFormat.format(totalLine.invest) + ' ' + totalLine.symbol}</td>
-            {/* <td></td>
-            <td>{totalLine.nbAsset}</td> */}
+            <td>{numberFormat.format(totalLine.buyPrice) + ' $'}</td>
+            <td>{numberFormat.format(totalLine.nbAsset)}</td>
+            <td>{numberFormat.format(totalLine.invest) + ' $'}</td>
             <td>{totalLine.id}</td>
           </tr>
         </tfoot>
@@ -182,15 +207,27 @@ function Board() {
     if(id.includes('infos')) setCheck({...check, infos: id});
   }
 
+  const getHistory = useCallback(async (invest) => {
+    let data = invest;
+    if(invest.cryptos) data = await getHistoricalData(invest);
+
+    setDataExcel(data);
+  }, [setDataExcel])
+
   useEffect(() => {
-    console.log(check)
     const dataExcel = JSON.parse(localStorage.getItem('dataExcel'));
     const propsDataExcel = Object.keys(dataExcel);
 
-    setDataExcel(dataExcel);
-    setPropsDataExcel(propsDataExcel);
-    initData(propsDataExcel, dataExcel);
-  }, [initData])
+    if(!initDisplay) {
+      propsDataExcel.find((prop) => prop === 'cryptos') && getHistory(dataExcel);
+      setPropsDataExcel(propsDataExcel);
+      setInitDisplay(true);
+    }
+    if(!initDisplay || lang !== i18n.language) {
+      initData(propsDataExcel, dataExcel);
+      setLang(i18n.language);
+    }
+  }, [initData, i18n, lang, initDisplay, getHistory])
 
   const recreate = () => {
     localStorage.removeItem('dataExcel');
@@ -200,9 +237,9 @@ function Board() {
   return (
     <main>
       {
-        sections.map((section) => {
+        lang === i18n.language  && sections.map((section) => {
           return (
-            <section key={section.id}>
+             <section key={section.id}>
               <div className="container-section">
                 <div className="container-title">
                   <h1 className="title-section">{section.title}</h1>
@@ -265,13 +302,13 @@ function Board() {
                         <th scope="col">{t('BOARD.INFOS.NAME')}</th>
                         <th scope="col">{t('BOARD.INFOS.SYMBOL')}</th>
                         <th scope="col">DATE</th>
+                        <th scope="col">{t('BOARD.INFOS.BUY_PRICE')}</th>
+                        <th scope="col">{t('BOARD.INFOS.NUMBER_ASSET')}</th>
                         <th scope="col">INVEST</th>
-                        {/* <th scope="col">PRICE BUY DAY</th>
-                        <th scope="col">NUMBER ASSET</th> */}
                         <th scope="col">ID</th>
                       </tr>
                     </thead>
-                    { addDataForInfo(check.infos.split('-')[0]) }
+                    { addDataForInfo(check.infos.split('-')[0], dataExcel) }
                   </table>
                 </div>
               }

@@ -1,0 +1,30 @@
+.dot-one {
+  display: inline-block;
+  animation: 1s linear 0s infinite alternate moveDot;
+}
+.dot-two {
+  display: inline-block;
+  animation: 1s linear 0.2s infinite alternate moveDot;
+}
+.dot-three {
+  display: inline-block;
+  animation: 1s linear 0.4s infinite alternate moveDot;
+}
+
+@keyframes moveDot {
+  0% {
+    transform: translateY(0px);
+  }
+  25% {
+    transform: translateY(-5px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  75% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}

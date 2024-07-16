@@ -7,8 +7,11 @@ const EN = {
       ON_CRYPTO: 'On crypto (%)',
     },
     INFOS: {
+      BUY_PRICE: "BUY PRICE",
       CRYPTOS: "Cryptos",
       NAME: "NAME",
+      NUMBER_ASSET: "NUMBER ASSET",
+      NO_DATA: "No data",
       STOCKS: "Stocks",
       SYMBOL: "SYMBOL",
     }
@@ -26,7 +29,7 @@ const EN = {
     HOW_MANY_STOCK: "How many stock you have ?",
     IMPORT: "Import",
     INVEST: "Invest ($)",
-    LOADING: "Loading...",
+    LOADING: "Loading",
     NAME: "Name",
     NEXT: "Next",
     NO_DATA: "NO DATA",

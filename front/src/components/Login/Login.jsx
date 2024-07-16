@@ -2,7 +2,7 @@ import './Login.css';
 
 function Login() {
   return (
-    <button className='btn'>LOGIN</button>
+    <button className='btn' disabled style={{cursor: 'initial'}}>LOGIN</button>
   )
 }
 
