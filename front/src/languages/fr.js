@@ -1,6 +1,7 @@
 const FR = {
   BOARD: {
     CHARTS: {
+    CREATE_EXCEL: "Créer un Excel",
       TITLE: "GRAPH",
       ON_TOTAL: 'Sur total (%)',
       ON_STOCK: 'Sur stock (%)',
@@ -23,8 +24,8 @@ const FR = {
   },
   OPERATION: {
     CREATE: "Créer",
-    CREATE_EXCEL: "Créer un Excel",
     ENTER_FOUND: "Veuillez entrer des valeurs correctes",
+    GO_BOARD: "Aller au tableau",
     HOW_MANY_CRYPTO: "Combien de crypto as-tu ?",
     HOW_MANY_STOCK: "Combien d'action as-tu ?",
     IMPORT: "Importer",

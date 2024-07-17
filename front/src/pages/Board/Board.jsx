@@ -4,11 +4,12 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Pie } from 'react-chartjs-2';
 
-import { getHistoricalData } from "../../services/request";
+import { getHistoricalData, postCreateExcel } from "../../services/request";
 import { toPercentage } from "../../services/math";
 import colors from "../../services/colors";
 
 import DotLoading from '../../common/DotLoading/DotLoading';
+import { saveAs } from 'file-saver';
 
 import './Board.css';
 
@@ -21,6 +22,7 @@ function Board() {
   const [dataExcel, setDataExcel] = useState();
   const [propsDataExcel, setPropsDataExcel] = useState();
   const [initDisplay, setInitDisplay] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState('');
   const [check, setCheck] = useState({
     charts: 'total-charts',
@@ -153,7 +155,7 @@ function Board() {
             let buyPrice = 0;
             let nbAsset = 0;
             let getValueInvest = data.buyPrice?.split('$')[1];
-            
+
             if(data.buyPrice) {
               buyPrice = Number(getValueInvest.replace(',', getValueInvest.includes(',') && getValueInvest.includes('.') ? '' : '.'));
               nbAsset = buyPrice * checkNumber;
@@ -210,40 +212,65 @@ function Board() {
   const getHistory = useCallback(async (invest) => {
     let data = invest;
     if(invest.cryptos) data = await getHistoricalData(invest);
-
+    setLoading(false);
     setDataExcel(data);
-  }, [setDataExcel])
+  }, [])
 
   useEffect(() => {
-    const dataExcel = JSON.parse(localStorage.getItem('dataExcel'));
-    const propsDataExcel = Object.keys(dataExcel);
+    let dataE = JSON.parse(localStorage.getItem('dataExcel'));
+    const propsDataExcel = Object.keys(dataE);
 
     if(!initDisplay) {
-      propsDataExcel.find((prop) => prop === 'cryptos') && getHistory(dataExcel);
+      if(propsDataExcel.find((prop) => prop === 'cryptos')) {
+        getHistory(dataE);
+      } else {
+        setDataExcel(dataE);
+        setLoading(false);
+      }
       setPropsDataExcel(propsDataExcel);
       setInitDisplay(true);
     }
     if(!initDisplay || lang !== i18n.language) {
-      initData(propsDataExcel, dataExcel);
+      initData(propsDataExcel, dataE);
       setLang(i18n.language);
     }
-  }, [initData, i18n, lang, initDisplay, getHistory])
+  }, [initData, i18n, lang, initDisplay, getHistory, setDataExcel])
 
-  const recreate = () => {
+  const resetData = () => {
     localStorage.removeItem('dataExcel');
     navigate('..');
+  }
+
+  const createExcel = () => {
+    postCreateExcel(dataExcel).then((res) => {
+      const date = new Date();
+      const filename =  t('BOARD.CHARTS.CREATE_EXCEL').includes('create') ? 
+        `NSM-report_${(date.getMonth() +1)}-${date.getDate()}-${date.getFullYear()}.xlsx`:
+        `NSM-rapport_${(date.getDate())}-${date.getMonth() + 1}-${date.getFullYear()}.xlsx`;
+  
+      saveAs(res, filename.toString());
+    });
   }
 
   return (
     <main>
       {
-        lang === i18n.language  && sections.map((section) => {
+        lang === i18n.language && sections.map((section) => {
           return (
              <section key={section.id}>
               <div className="container-section">
                 <div className="container-title">
                   <h1 className="title-section">{section.title}</h1>
-                  {section.id === 'charts' && <input type="button" value="Reset" onClick={recreate} />}
+                  {section.id === 'charts' && (
+                    loading ?
+                      <div className="loading-excel">
+                        <div>
+                          <DotLoading size='xx-large' />
+                        </div>
+                      </div> :
+                      <input className="excel-input" type="button" value="Create Excel" onClick={createExcel} />
+                  )}
+                  {section.id === 'charts' && <input className="reset-input" type="button" value="Reset" onClick={resetData} />}
                 </div>
                 { propsDataExcel && propsDataExcel.length > 1 && 
                   <div>

@@ -59,18 +59,43 @@ section {
 .container-title {
   display: flex;
   align-items: center;
-  width: 215px;
   justify-content: space-between;
 }
 
-.container-title > input {
+.container-title:first-child {
+  width: 330px;
+}
+
+.reset-input, .excel-input, .loading-excel {
   background: none;
   padding-bottom: 20px;
   height: 20px;
-  color: red;
-  border: 2px solid red;
+  border: 2px solid;
   border-radius: 25px;
   text-align: center;
+  font-weight: 700;
+}
+
+.reset-input {
+  color: red;
+  border-color: red;
+}
+
+.excel-input {
+  color: green;
+  border-color: green;
+}
+
+.loading-excel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 20px;
+}
+
+.loading-excel > div {
+  margin-top: 13px;
 }
 
 .container-chart {

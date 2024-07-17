@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import regex from "../../services/regex";
 import warning from "../../assets/images/warning.svg";
-import CreateExcel from "../../components/CreateExcel/CreateExcel";
+import CreateBoard from "../../components/CreateBoard/CreateBoard";
 
 import './Operation.css';
 
@@ -76,7 +76,7 @@ function Operation() {
               </div>
               <button onClick={createForm} className="btn">{t('OPERATION.NEXT')}</button>
             </div> :
-            <CreateExcel nbStock={Number(nbStock)} nbCrypto={Number(nbCrypto)} />
+            <CreateBoard nbStock={Number(nbStock)} nbCrypto={Number(nbCrypto)} />
       }
     </main>
   )

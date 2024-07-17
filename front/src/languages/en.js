@@ -1,6 +1,7 @@
 const EN = {
   BOARD: {
     CHARTS: {
+      CREATE_EXCEL: "Create Excel",
       TITLE: "CHARTS",
       ON_TOTAL: 'On total (%)',
       ON_STOCK: 'On stock (%)',
@@ -23,8 +24,8 @@ const EN = {
   },
   OPERATION: {
     CREATE: "Create",
-    CREATE_EXCEL: "Create Excel",
     ENTER_FOUND: "Please enter correct values",
+    GO_BOARD: "Go board",
     HOW_MANY_CRYPTO: "How many crypto you have ?",
     HOW_MANY_STOCK: "How many stock you have ?",
     IMPORT: "Import",

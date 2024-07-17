@@ -14,7 +14,7 @@ export function getListCrypto() {
   .catch((error) => {"Error GET crypto list", error})
 }
 
-export function createExcel(data) {
+export function postCreateExcel(data) {
   return fetch(`${urlBack}/api_3/excel/create`, {
     method: 'POST',
     headers: {

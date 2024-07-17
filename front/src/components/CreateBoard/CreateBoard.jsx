@@ -2,9 +2,8 @@ import { useEffect, useState, useRef, Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { saveAs } from 'file-saver';
 
-import { getListCrypto, getListStock, createExcel } from "../../services/request";
+import { getListCrypto, getListStock } from "../../services/request";
 import regex from "../../services/regex";
 import DataList from "../../common/DataList/DataList";
 import DotLoading from "../../common/DotLoading/DotLoading";
@@ -12,14 +11,14 @@ import DotLoading from "../../common/DotLoading/DotLoading";
 import horizontalSeparartor from "../../assets/images/horizontal-separator.svg";
 import huskyThinks from "../../assets/images/husky-thinks.png";
 
-import './CreateExcel.css';
+import './CreateBoard.css';
 
-CreateExcel.propTypes  = {
+CreateBoard.propTypes  = {
   nbStock: PropTypes.number,
   nbCrypto: PropTypes.number,
 }
 
-function CreateExcel({nbStock, nbCrypto}) {
+function CreateBoard({nbStock, nbCrypto}) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [stockLines, setStockLines] = useState([]);
@@ -286,11 +285,11 @@ function CreateExcel({nbStock, nbCrypto}) {
     enableButton(arrayErr, lines, typeAsset);
   }
 
-  const create = (e) => {
+  const createBoard = (e) => {
     let data = {};
 
     e.preventDefault();
-    
+
     if(checkLists) {
       data = {
         stocks: stockLines,
@@ -306,16 +305,8 @@ function CreateExcel({nbStock, nbCrypto}) {
       }
     }
 
-    createExcel(data).then((res) => {
-      const date = new Date();
-      const filename =  t('OPERATION.CREATE_EXCEL').includes('create') ? 
-        `NSM-report_${(date.getMonth() +1)}-${date.getDate()}-${date.getFullYear()}.xlsx`:
-        `NSM-rapport_${(date.getDate())}-${date.getMonth() + 1}-${date.getFullYear()}.xlsx`;
-
-      saveAs(res, filename.toString());
-      localStorage.setItem('dataExcel', JSON.stringify(data));
-      navigate('board'); 
-    });
+    localStorage.setItem('dataExcel', JSON.stringify(data));
+    navigate('board'); 
   }
 
   useEffect(() => {
@@ -432,7 +423,7 @@ function CreateExcel({nbStock, nbCrypto}) {
           </div>
         }
         </div>
-        <button onClick={create} className="btn btn-form" disabled={buttonDisabled}>{t('OPERATION.CREATE_EXCEL')}</button>
+        <button onClick={createBoard} className="btn btn-form" disabled={buttonDisabled}>{t('OPERATION.GO_BOARD')}</button>
       </> :
       <div className="container-loading">
         <img className="husky-thinks" src={huskyThinks} alt="Mascotte husky thinks" />
@@ -443,4 +434,4 @@ function CreateExcel({nbStock, nbCrypto}) {
   )
 }
 
-export default CreateExcel;
+export default CreateBoard;
