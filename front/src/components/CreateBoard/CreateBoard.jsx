@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import { getListCrypto, getListStock } from "../../services/request";
+import { getListCrypto } from "../../services/crypto/cryptoRequest";
+import { getListStock } from "../../services/stock/stockRequest";
 import regex from "../../services/regex";
 import DataList from "../../common/DataList/DataList";
 import DotLoading from "../../common/DotLoading/DotLoading";

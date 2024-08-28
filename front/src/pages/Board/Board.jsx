@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Pie } from 'react-chartjs-2';
 
-import { getHistoricalData, postCreateExcel } from "../../services/request";
+import { postCreateExcel } from "../../services/excel/excelRequest";
+import { getHistoricalData } from "../../services/crypto/cryptoRequest";
 import { toPercentage } from "../../services/math";
 import colors from "../../services/colors";
 
@@ -56,7 +57,7 @@ function Board() {
     let number = string;
     let lengthString = number.length;
     const symbol = string.split(' ')[--lengthString];
-    
+
     number = number.replaceAll(" ", '');
     number = number.replace(symbol, '');
     return number;
@@ -169,7 +170,7 @@ function Board() {
                 <th scope="row">{data.name.split('/')[0]}</th>
                 <td>{data.name.split('/')[1].toUpperCase()}</td>
                 <td>{data.date}</td>
-                <td>{data.buyPrice ? `${numberFormat.format(buyPrice)} $` : noData(data.buyPrice, data.id) }</td>
+                <td>{data.buyPrice ? `${buyPrice} $` : noData(data.buyPrice, data.id) }</td>
                 <td>{data.buyPrice ? numberFormat.format(nbAsset) : noData(data.buyPrice, data.id) }</td>
                 <td>{data.invest}</td>
                 <td>{++id}</td>

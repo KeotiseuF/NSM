@@ -1,42 +1,32 @@
 const urlBack = import.meta.env.VITE_API_URL;
 
-export function getListStock() {
-  return fetch(`${urlBack}/api_3/stock`)
+export function getRequest(path) {
+  return fetch(`${urlBack}/${path}`)
   .then((res) => res.json())
-  .then((res) => res)
-  .catch((error) => {"Error GET stock list", error})
+  .then((res) => res);
 }
 
-export function getListCrypto() {
-  return fetch(`${urlBack}/api_3/crypto`)
-  .then((res) => res.json())
-  .then((res) => res)
-  .catch((error) => {"Error GET crypto list", error})
-}
-
-export function postCreateExcel(data) {
-  return fetch(`${urlBack}/api_3/excel/create`, {
+export function postRequestBlob(path, body) {
+  return fetch(`${urlBack}/${path}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8'
     },
     responseType: 'blob',
-    body: JSON.stringify({data})
+    body: JSON.stringify(body)
   })
   .then((res) => res.blob())
   .then((res) => res)
-  .catch((error) => {"Error GET crypto list", error})
 }
 
-export function getHistoricalData(data) {
-  return fetch(`${urlBack}/api_3/crypto/historical-data`, {
+export function postRequest(path, body) {
+  return fetch(`${urlBack}/${path}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8'
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(body)
   })
   .then((res) => res.json())
   .then((res) => res)
-  .catch((error) => {"Error historical data", error})
 }
