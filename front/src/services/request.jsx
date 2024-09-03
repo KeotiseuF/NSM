@@ -19,9 +19,10 @@ export function postRequestBlob(path, body) {
   .then((res) => res)
 }
 
-export function postRequest(path, body) {
+export function postRequest(path, body, controller) {
   return fetch(`${urlBack}/${path}`, {
     method: 'POST',
+    signal: controller.signal,
     headers: {
       'Content-Type': 'application/json;charset=utf-8'
     },

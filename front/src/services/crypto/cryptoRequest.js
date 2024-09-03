@@ -9,11 +9,15 @@ export async function getListCrypto() {
   }
 }
 
-export async function getHistoricalData(data) {
+export async function getHistoricalData(data, controller) {
   try {
-    const historicalCrypto = await postRequest('crypto/historical-data', data);
+    const historicalCrypto = await postRequest('crypto/historical-data', data, controller);
     return historicalCrypto;
-  } catch {
-    console.error('Error historical data crypto.');
+  } catch(e) {
+    if (e.name === 'AbortError') {
+      console.error('Request aborted');
+    } else {
+      console.error('Error historical data crypto.');
+    }
   }
 }

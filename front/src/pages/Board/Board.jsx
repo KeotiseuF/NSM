@@ -19,10 +19,11 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 function Board() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const controller = new AbortController();
 
   const [dataExcel, setDataExcel] = useState();
   const [propsDataExcel, setPropsDataExcel] = useState();
-  const [initDisplay, setInitDisplay] = useState(false);
+  const [initDisplay, setInitDisplay] = useState(true);
   const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState('');
   const [check, setCheck] = useState({
@@ -212,7 +213,7 @@ function Board() {
 
   const getHistory = useCallback(async (invest) => {
     let data = invest;
-    if(invest.cryptos) data = await getHistoricalData(invest);
+    if(invest.cryptos) data = await getHistoricalData(invest, controller);
     setLoading(false);
     setDataExcel(data);
   }, [])
@@ -221,19 +222,21 @@ function Board() {
     let dataE = JSON.parse(localStorage.getItem('dataExcel'));
     const propsDataExcel = Object.keys(dataE);
 
-    if(!initDisplay) {
-      if(propsDataExcel.find((prop) => prop === 'cryptos')) {
-        getHistory(dataE);
-      } else {
-        setDataExcel(dataE);
-        setLoading(false);
+    if(initDisplay || lang !== i18n.language ) {
+      if(initDisplay) {
+        const isDataExcelHasCrypto = propsDataExcel.find((prop) => prop === 'cryptos');
+        if(isDataExcelHasCrypto) {
+          getHistory(dataE);
+        } else {
+          setDataExcel(dataE);
+          setLoading(false);
+        }
+        setPropsDataExcel(propsDataExcel);
       }
-      setPropsDataExcel(propsDataExcel);
-      setInitDisplay(true);
-    }
-    if(!initDisplay || lang !== i18n.language) {
+
       initData(propsDataExcel, dataE);
       setLang(i18n.language);
+      setInitDisplay(false);
     }
   }, [initData, i18n, lang, initDisplay, getHistory, setDataExcel])
 
@@ -246,12 +249,20 @@ function Board() {
     postCreateExcel(dataExcel).then((res) => {
       const date = new Date();
       const filename =  t('BOARD.CHARTS.CREATE_EXCEL').includes('create') ? 
-        `NSM-report_${(date.getMonth() +1)}-${date.getDate()}-${date.getFullYear()}.xlsx`:
+        `NSM-report_${(date.getMonth() +1)}-${date.getDate()}-${date.getFullYear()}.xlsx` :
         `NSM-rapport_${(date.getDate())}-${date.getMonth() + 1}-${date.getFullYear()}.xlsx`;
-  
+
       saveAs(res, filename.toString());
     });
   }
+
+  // Effect for abort request.
+  useEffect(() => {
+    return () => {
+      const pathname = window.location.pathname;
+      if(pathname !== '/operation/board') controller.abort('URL changed');
+    }
+  }, [])
 
   return (
     <main>
