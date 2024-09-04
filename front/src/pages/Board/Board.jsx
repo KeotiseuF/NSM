@@ -211,9 +211,25 @@ function Board() {
     if(id.includes('infos')) setCheck({...check, infos: id});
   }
 
+  const checkCryptoDataChanged = (invest) => {
+    const cryptos = invest.cryptos;
+    const historicalDataCrypto = JSON.parse(localStorage.getItem('historicalDataCrypto'));
+    let isChanged = true;
+    if(historicalDataCrypto) isChanged = historicalDataCrypto.every((crypto, id) => crypto.date !== cryptos[id].date && crypto.name !== cryptos[id].name && crypto.invest !== cryptos[id].invest);
+    return isChanged;
+  }
+
   const getHistory = useCallback(async (invest) => {
     let data = invest;
-    if(invest.cryptos) data = await getHistoricalData(invest, controller);
+    const cryptoChanged = checkCryptoDataChanged(invest);
+
+    if(invest.cryptos && cryptoChanged) {
+      data = await getHistoricalData(invest, controller);
+      localStorage.setItem('historicalDataCrypto', JSON.stringify(data.cryptos));
+    } else {
+      data.cryptos = JSON.parse(localStorage.getItem('historicalDataCrypto'));
+    }
+
     setLoading(false);
     setDataExcel(data);
   }, [])
@@ -308,21 +324,26 @@ function Board() {
                       propsDataExcel.map((themeAsset) => {
                         return (
                           <div key={themeAsset} className="container-asset-checkbox">
-                            <input
-                              type="checkbox"
-                              name={`${themeAsset}-${section.id}`} id={`${themeAsset}-${section.id}`}
-                              checked={`${themeAsset}-${section.id}` === check[section.id]}
-                              onChange={dataToDisplay}
-                              disabled={`${themeAsset}-${section.id}` === check[section.id]}
-                              className="asset-checkbox"
-                            />
-                            <label
-                              htmlFor={`${themeAsset}-${section.id}`}
-                              className="asset-label"
-                              style={`${themeAsset}-${section.id}` === check[section.id] ? assetCheckboxStyle : {}}
-                            >
-                              {t(`BOARD.INFOS.${themeAsset.toUpperCase()}`)}
-                            </label>
+                            {loading ?
+                              <DotLoading size='xx-large' /> :
+                              <>
+                                <input
+                                  type="checkbox"
+                                  name={`${themeAsset}-${section.id}`} id={`${themeAsset}-${section.id}`}
+                                  checked={`${themeAsset}-${section.id}` === check[section.id]}
+                                  onChange={dataToDisplay}
+                                  disabled={`${themeAsset}-${section.id}` === check[section.id]}
+                                  className="asset-checkbox"
+                                />
+                                <label
+                                  htmlFor={`${themeAsset}-${section.id}`}
+                                  className="asset-label"
+                                  style={`${themeAsset}-${section.id}` === check[section.id] ? assetCheckboxStyle : {}}
+                                >
+                                  {t(`BOARD.INFOS.${themeAsset.toUpperCase()}`)}
+                                </label>
+                              </>
+                            }
                           </div>
                         )
                       })

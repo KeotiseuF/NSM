@@ -12,6 +12,8 @@ main {
   height: 50px;
   border: 3.5px solid var(--primary-color);
   overflow: hidden;
+  display: flex;
+  justify-content: center;
 }
 .container-asset-checkbox:nth-last-child(1) {
   border-radius: 0px 25px 25px 0px;
