@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react';
 import husky from '../../assets/images/husky.png';
 import { getArticleNYTimes } from '../../services/stock/stockRequest';
+import DotLoading from '../../common/DotLoading/DotLoading';
 import './Home.css';
 
 function Home() {
   const [listArticleNYTimes, setListArticleNYTimes] = useState([]);
   const [init, setInit] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if(init && !listArticleNYTimes.length) {
-      getArticleNYTimes().then((list) => setListArticleNYTimes(list.results));
+      getArticleNYTimes().then((list) => {
+        setListArticleNYTimes(list.results);
+        setLoading(false);
+      });
       setInit(false);
     }
   }, [init])
@@ -18,23 +23,28 @@ function Home() {
     <main className='home-main'>
       <div className='container-article'>
         <h2>Stock News</h2>
-        <ul>
-          {listArticleNYTimes.map((article, id) => {
-            const publicationDate = new Date(article.first_published_date).toLocaleDateString();
-            return (
-              <li key={'article-'+[++id]}>
-                <a href={article.url}>
-                  <p className='title-article'>{article.title}</p>
+        {loading ?
+          <div>
+            <DotLoading size='xx-large' />
+          </div> :
+          <ul>
+            {listArticleNYTimes.map((article, id) => {
+              const publicationDate = new Date(article.first_published_date).toLocaleDateString();
+              return (
+                <li key={'article-'+[++id]}>
+                  <a href={article.url}>
+                    <p className='title-article'>{article.title}</p>
 
-                  <div className='container-date-article'>
-                    <p><span className='underline-text'>Publication:</span> {publicationDate}</p>
-                    <p><span className='underline-text'>Source:</span> {article.source}</p>
-                  </div>
-                </a>
-              </li>
-            )
-          })}
-        </ul>
+                    <div className='container-date-article'>
+                      <p><span className='underline-text'>Publication:</span> {publicationDate}</p>
+                      <p><span className='underline-text'>Source:</span> {article.source}</p>
+                    </div>
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+        }
       </div>
       <div className='container-mascotte'>
         <img className='mascotte' src={husky} alt="Mascotte husky" />
