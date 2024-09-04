@@ -6,9 +6,10 @@ import './Home.css';
 function Home() {
   const [listArticleNYTimes, setListArticleNYTimes] = useState([]);
   const [init, setInit] = useState(true);
+
   useEffect(() => {
     if(init && !listArticleNYTimes.length) {
-      getArticleNYTimes().then((list) => setListArticleNYTimes(list));
+      getArticleNYTimes().then((list) => setListArticleNYTimes(list.results));
       setInit(false);
     }
   }, [init])
@@ -16,11 +17,12 @@ function Home() {
   return (
     <main className='home-main'>
       <div className='container-article'>
+        <h2>Stock News</h2>
         <ul>
           {listArticleNYTimes.map((article, id) => {
             const publicationDate = new Date(article.first_published_date).toLocaleDateString();
             return (
-              <li key={'article-'[++id]}>
+              <li key={'article-'+[++id]}>
                 <a href={article.url}>
                   <p className='title-article'>{article.title}</p>
 
@@ -39,11 +41,21 @@ function Home() {
         <h1>NO SLEEP MONEY</h1>
       </div>
       <div className='container-article'>
+        <h2>Crypto News</h2>
+        <p>Soon...</p>
         {/* <ul>
-          {listArticle.map((article, id) => {
+          {listArticleNYTimes.map((article, id) => {
+            const publicationDate = new Date(article.first_published_date).toLocaleDateString();
             return (
-              <li key={'article-'[++id]}>
-                {article.title}
+              <li key={'article-'+[++id]}>
+                <a href={article.url}>
+                  <p className='title-article'>{article.title}</p>
+
+                  <div className='container-date-article'>
+                    <p><span className='underline-text'>Publication:</span> {publicationDate}</p>
+                    <p><span className='underline-text'>Source:</span> {article.source}</p>
+                  </div>
+                </a>
               </li>
             )
           })}
