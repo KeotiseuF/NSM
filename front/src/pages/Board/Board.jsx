@@ -171,8 +171,8 @@ function Board() {
                 <th scope="row">{data.name.split('/')[0]}</th>
                 <td>{data.name.split('/')[1].toUpperCase()}</td>
                 <td>{data.date}</td>
-                <td>{data.buyPrice ? `${buyPrice} $` : noData(data.buyPrice, data.id) }</td>
-                <td>{data.buyPrice ? numberFormat.format(nbAsset) : noData(data.buyPrice, data.id) }</td>
+                <td style={!data.buyPrice && !loading ? {color: 'red'} : {}}>{data.buyPrice ? `${buyPrice} $` : noData(data.buyPrice, data.id) }</td>
+                <td style={!data.buyPrice && !loading ? {color: 'red'} : {}}>{data.buyPrice ? numberFormat.format(nbAsset) : noData(data.buyPrice, data.id) }</td>
                 <td>{data.invest}</td>
                 <td>{++id}</td>
               </tr>
@@ -258,6 +258,7 @@ function Board() {
 
   const resetData = () => {
     localStorage.removeItem('dataExcel');
+    localStorage.removeItem('historicalDataCrypto');
     navigate('..');
   }
 

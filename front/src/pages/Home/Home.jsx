@@ -28,7 +28,7 @@ function Home() {
             <DotLoading size='xx-large' />
           </div> :
           <ul>
-            {listArticleNYTimes.map((article, id) => {
+            {listArticleNYTimes?.map((article, id) => {
               const publicationDate = new Date(article.first_published_date).toLocaleDateString();
               return (
                 <li key={'article-'+[++id]}>

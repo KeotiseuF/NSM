@@ -78,11 +78,12 @@ function CreateBoard({nbStock, nbCrypto}) {
       setErrorsForm(takeOffError);
 
       if((stockLines.length === 0 && cryptoLines.length === 1) || (stockLines.length === 1 && cryptoLines.length === 0)) {
-        window.location.href = `${window.location.protocol}//${window.location.host}/operation`;
+        navigate(`/home`, {replace: true});
       } else if (lines.length === 1 && (stockLines.length > 0 || cryptoLines.length > 0)) {
         lines = [];
       } else {
         lines = lines.filter((line) => line.id !== idLine);
+        lines = lines.filter((line, id) => line.id = `${idLine.split('-')[0]}-${id}`);
       }
     }
 
@@ -285,6 +286,8 @@ function CreateBoard({nbStock, nbCrypto}) {
     const typeAsset = name.includes('stock') ? 'stock' : 'crypto';
     enableButton(arrayErr, lines, typeAsset);
   }
+
+  // const
 
   const createBoard = (e) => {
     let data = {};
